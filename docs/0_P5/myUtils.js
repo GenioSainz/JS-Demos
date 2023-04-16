@@ -1,15 +1,15 @@
 let myUtils = {
     
-    drawGrid : function(){
+    drawGrid : function({cellSize = 50}={}){
 
-        // this function draws a grid with a cellSize 
+        // This function draws a grid with a cellSize 
+        // from (x,y)=(0,0) to (x,y)=(windowWidth,windowHeight)
 
         push()
     
             stroke(127,127,127);
             fill(127);
-    
-            var cellSize  = 50;
+  
     
             for (var x=0; x < width; x+=cellSize ) {
               line(x, -height, x, height);
@@ -96,7 +96,55 @@ let myUtils = {
         
       }
 
-  },
+    },
 
+    drawJoystick : function({x0=50, y0=50, joystickLen=250}={}){
+
+      // This function creates a joystick (a 2D slider). 
+      // with range  between X[-1,1] and Y[-1,1]. 
+
+      push()
+
+      var        xMax = x0 + joystickLen;
+      var        yMax = y0 + joystickLen;
+      var        xMed = x0 + joystickLen/2;
+      var        yMed = y0 + joystickLen/2;
+
+      fill(200) // JOYSTIC
+      rect(x0,y0,joystickLen,joystickLen,joystickLen/25);
+
+      strokeWeight(2)
+      line(x0 ,yMed, xMax, yMed);  // X AXIS
+      line(xMed, y0, xMed, yMax ); // Y AXIS
+      this.drawArrow([xMed, yMed],[xMax, yMed],{arrowHead:0.05}); // X DIRECCTION
+      this.drawArrow([xMed, yMed],[xMed, yMax],{arrowHead:0.05}); // Y DIRECCTION
+     
+      var boolX = mouseX <= xMax && mouseX >= x0;
+      var boolY = mouseY <= yMax && mouseY >= y0;
+
+      if (mouseIsPressed && (boolX && boolY)){
+        
+        strokeWeight(1)
+          line(mouseX,y0,mouseX,yMax);
+          line(x0,mouseY,xMax,mouseY)
+          fill(255,0,0)
+          circle(mouseX,mouseY,joystickLen/20)
+
+          var joystickX = map(mouseX, x0, xMax, -1, 1).toFixed(3);
+          var joystickY = map(mouseY, y0, yMax, -1, 1).toFixed(3);
+          
+          var ktxt = joystickLen/15;        // TEXT (X,Y)
+          noFill();textAlign(CENTER,CENTER)
+          text(`x: ${joystickX}`, xMed + 2*ktxt, yMed - ktxt);
+          text(`y: ${joystickY}`, xMed + 2*ktxt, yMed + ktxt);
+
+          return {joystickX,joystickY}
+      };
+
+      pop()
     
+
+    },
 };
+
+

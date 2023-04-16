@@ -14,12 +14,14 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES)
   frameRate(fr);
+  
 }
 
 function draw() {
   
   background(240);strokeWeight(2);noFill()
-  myUtils.drawGrid([127,127,127])
+  myUtils.drawGrid({cellSize:100});
+  
   stroke([0,0,0]);fill([255,0,0])
   
   // CALC DISTANCES-ANGLES
@@ -88,6 +90,9 @@ function draw() {
     var arrowLen    = map(distance, 0, maxDistance,0, dc/2);
     myUtils.drawArrow([xc,yc],[xc+cos(te2)*arrowLen,yc+sin(te2)*arrowLen],{color:[255,255,255],arrowHead:0.2}); // ARROW ANGLE MOUSE
   pop()
+
+  var coords = myUtils.drawJoystick({joystickLen:300});
+  
 
 };
 
