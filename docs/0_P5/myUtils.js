@@ -1,3 +1,5 @@
+
+
 let myUtils = {
     
     drawGrid : function({cellSize = 50}={}){
@@ -97,54 +99,137 @@ let myUtils = {
       }
 
     },
+};
 
-    drawJoystick : function({x0=50, y0=50, joystickLen=250}={}){
 
-      // This function creates a joystick (a 2D slider). 
-      // with range  between X[-1,1] and Y[-1,1]. 
+class Joystick{
 
-      push()
+  constructor({x0=50, y0=50,joyLen=250,circleColor=[255,0,0]}={}){
 
-      var        xMax = x0 + joystickLen;
-      var        yMax = y0 + joystickLen;
-      var        xMed = x0 + joystickLen/2;
-      var        yMed = y0 + joystickLen/2;
+    this.x0        = x0;
+    this.y0        = y0;
+    this.joyLen    = joyLen;
+    this.xMax      = this.x0 + this.joyLen;
+    this.yMax      = this.y0 + this.joyLen;
+    this.xMed      = this.x0 + this.joyLen/2;
+    this.yMed      = this.y0 + this.joyLen/2;
+    this.ktxt      = 2; 
+    this.joystickX = 0;
+    this.joystickY = 0;
+    this.xJoysDraw = this.xMed;
+    this.yJoysDraw = this.yMed;
+    this.circleColor = circleColor;
 
-      fill(200) // JOYSTIC
-      rect(x0,y0,joystickLen,joystickLen,joystickLen/25);
+  };
+
+  // draw joystick
+  draw(){
+
+
+    push()
+
+      fill(210) // JOYSTIC Bounding box
+      rect(this.x0,this.y0,this.joyLen,this.joyLen,this.joyLen/25);
 
       strokeWeight(2)
-      line(x0 ,yMed, xMax, yMed);  // X AXIS
-      line(xMed, y0, xMed, yMax ); // Y AXIS
-      this.drawArrow([xMed, yMed],[xMax, yMed],{arrowHead:0.05}); // X DIRECCTION
-      this.drawArrow([xMed, yMed],[xMed, yMax],{arrowHead:0.05}); // Y DIRECCTION
-     
-      var boolX = mouseX <= xMax && mouseX >= x0;
-      var boolY = mouseY <= yMax && mouseY >= y0;
+      line(this.x0 ,this.yMed, this.xMax, this.yMed);  // X AXIS
+      line(this.xMed, this.y0, this.xMed, this.yMax ); // Y AXIS
+      myUtils.drawArrow([this.xMed, this.yMed],[this.xMax, this.yMed],{arrowHead:0.05}); // X DIRECCTION
+      myUtils.drawArrow([this.xMed, this.yMed],[this.xMed, this.yMax],{arrowHead:0.05}); // Y DIRECCTION
+    
+      var boolX = mouseX <= this.xMax+1 && mouseX >= this.x0-1;
+      var boolY = mouseY <= this.yMax+1 && mouseY >= this.y0-1;
 
       if (mouseIsPressed && (boolX && boolY)){
         
         strokeWeight(1)
-          line(mouseX,y0,mouseX,yMax);
-          line(x0,mouseY,xMax,mouseY)
-          fill(255,0,0)
-          circle(mouseX,mouseY,joystickLen/20)
+          //moving lines
+          line(mouseX,this.y0,mouseX,this.yMax);
+          line(this.x0,mouseY,this.xMax,mouseY);
 
-          var joystickX = map(mouseX, x0, xMax, -1, 1).toFixed(3);
-          var joystickY = map(mouseY, y0, yMax, -1, 1).toFixed(3);
+          //moving circle
+          fill(this.circleColor)
+          circle(mouseX,mouseY,this.joyLen/20);
           
-          var ktxt = joystickLen/15;        // TEXT (X,Y)
-          noFill();textAlign(CENTER,CENTER)
-          text(`x: ${joystickX}`, xMed + 2*ktxt, yMed - ktxt);
-          text(`y: ${joystickY}`, xMed + 2*ktxt, yMed + ktxt);
+          this.xJoysDraw = mouseX;
+          this.yJoysDraw = mouseY;
 
-          return {joystickX,joystickY}
-      };
+          this.joystickX = map(mouseX, this.x0, this.xMax, -1, 1);
+          this.joystickY = map(mouseY, this.y0, this.yMax, -1, 1);
 
-      pop()
-    
+          
+          // TEXT (X,Y)
+          fill(0);textSize(18);textAlign(CENTER,BOTTOM);strokeWeight(5)
+          text(`x: ${this.joystickY.toFixed(3)} y: ${this.joystickY.toFixed(3)}`, this.xMed, this.y0 - this.ktxt);
+      
 
-    },
+          pop()
+
+          return [this.joystickX,this.joystickY]
+
+      }else{
+
+          strokeWeight(1)
+          line(this.xJoysDraw,this.y0,this.xJoysDraw,this.yMax);
+          line(this.x0,this.yJoysDraw,this.xMax,this.yJoysDraw);
+          fill(this.circleColor)
+          circle(this.xJoysDraw,this.yJoysDraw,this.joyLen/20)
+          
+          // TEXT (X,Y)
+          fill(0);textSize(18);textAlign(CENTER,BOTTOM);strokeWeight(5)
+          text(`x: ${this.joystickY.toFixed(3)} y: ${this.joystickY.toFixed(3)}`, this.xMed, this.y0 - this.ktxt);
+
+          pop()
+          
+          return [this.joystickX,this.joystickY]
+
+      }
+
+  };
+
+  // update variables
+  update(){
+
+    this.xMax      = this.x0 + this.joyLen;
+    this.yMax      = this.y0 + this.joyLen;
+    this.xMed      = this.x0 + this.joyLen/2;
+    this.yMed      = this.y0 + this.joyLen/2;
+    this.ktxt      = 2; 
+    this.joystickX = 0;
+    this.joystickY = 0;
+    this.xJoysDraw = this.xMed;
+    this.yJoysDraw = this.yMed;
+
+
+  }
+  // get/set pos
+  get x0(){
+    return this._x0
+  };
+
+  set x0(value){
+    this._x0 = value;
+    this.update();
+  };
+
+  get y0(){
+    return this._y0
+  };
+
+  set y0(value){
+    this._y0 = value;
+    this.update();
+  };
+
+  get joyLen(){
+    return this._joyLen
+  };
+
+  set joyLen(value){
+    this._joyLen = value;
+    this.update();
+  };
+
 };
 
 

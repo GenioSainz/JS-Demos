@@ -9,6 +9,14 @@ var ktxt = 25;
 var segLength = 200;
 var p1,p2,te1;
 
+var dxk; 
+var dyk; 
+var tek; 
+var p1x; 
+var p1y; 
+var p2x; 
+var p2y;
+
 function setup() {
   
   createCanvas(windowWidth, windowHeight);
@@ -50,14 +58,13 @@ function draw() {
    // INITIAL TEXT
    /////////////////
   push()
-    fill(0);textSize(28);textAlign(CENTER,CENTER)
+    fill(0);textSize(24);textAlign(CENTER,CENTER)
     var tarL = 4;
     var txt1 = round(dx).toString().padStart(tarL, " ");
     var txt2 = round(dy).toString().padStart(tarL, " ");
     var txt3 = round(te1).toString().padStart(tarL, " ");
     text(`mouseX:${mouseX}  mouseY:${mouseY}  pX:${round(px)}  pY:${round(py)}`,windowWidth/2,50)
-    text(`dX:${txt1}  dY:${txt2}  Sign:${Math.sign(dy/dx)}  Alpha:${txt3}`     ,windowWidth/2,90)
-    text(`dXcos:${round(- cos(te1)*segLength)}  dYsin:${round(-sin(te1)*segLength)}`     ,windowWidth/2,130)
+    text(`dX:${txt1}  dY:${txt2}  Sign:${Math.sign(dy/dx)}  Alpha:${txt3}`     ,windowWidth/2,85)
   pop()
 
 
@@ -91,10 +98,25 @@ function draw() {
     myUtils.drawArrow([xc,yc],[xc+cos(te2)*arrowLen,yc+sin(te2)*arrowLen],{color:[255,255,255],arrowHead:0.2}); // ARROW ANGLE MOUSE
   pop()
 
-  var coords = myUtils.drawJoystick({joystickLen:300});
   
+  // Green arrow in P2
+  myUtils.drawArrow([p1x,p1y],[p2x,p2y],{color:[0,255,0],arrowHead:0.2,module:segLength/2});
 
 };
+
+
+// Green arrow in P2
+function mouseMoved(){
+
+  dxk = mouseX-pmouseX;
+  dyk = mouseY-pmouseY;
+  tek = atan2(dyk,dxk);
+  p1x = mouseX;
+  p1y = mouseY;
+  p2x = p1x + cos(tek)*50;
+  p2y = p1y + sin(tek)*50;
+
+}
 
 
 function windowResized() {
