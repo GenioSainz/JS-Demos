@@ -47,7 +47,7 @@ function draw() {
   // PLOT MOVING ARROW ----> P1---> P2
   ////////////////////////////////
   push()
-    fill(125);textSize(16);
+    fill(200);textSize(16);
     circle(px,py,100)
     myUtils.drawArrow([px,py], [mouseX,mouseY],{color:[255,0,0],double:true})
     fill(0);
@@ -80,7 +80,7 @@ function draw() {
     var axis_y1 = [xc,yc];
     var axis_y2 = [xc,yc + + map(mouseY, 0, windowHeight,0, dc/2)];
     
-    fill(125)
+    fill(200)
     circle(xc,yc,dc);
 
     fill(0);textSize(25)

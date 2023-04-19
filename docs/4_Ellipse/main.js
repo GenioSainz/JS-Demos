@@ -64,7 +64,7 @@ function draw() {
   var   p2x = p1x+d1;
   
   //ellipse
-  fill(180)
+  fill(200)
   ellipse(xc, yc, 2*a, 2*b);
   
   // central line distance f1 to p

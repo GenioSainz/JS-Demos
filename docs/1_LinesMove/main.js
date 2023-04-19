@@ -15,7 +15,7 @@ function setup() {
 
 function draw() {
   
-  background(127,127,127);strokeWeight(4);
+  background(220);strokeWeight(4);
   
   // dtheta        = 1;
   // theta         = theta + dtheta;

@@ -13,24 +13,23 @@ function setup() {
 
     joystickLen = windowWidth/6
 
-    myJoystick1 = new Joystick({x0:x0,               y0:y0, joyLen:joystickLen, circleColor:[255,0,0]});
-    myJoystick2 = new Joystick({x0:2*x0+joystickLen, y0:y0, joyLen:joystickLen, circleColor:[0,255,0]});
+    myJoystick1 = new Joystick({x0:x0,               y0:y0, joystickX:-0.5, joystickY:+0.25, joyLen:joystickLen, color:[255,0,0]});
+    myJoystick2 = new Joystick({x0:2*x0+joystickLen, y0:y0, joystickX:+0.5, joystickY:+0.50, joyLen:joystickLen, color:[0,255,0], drawCircle:false});
 }
   
 function draw() {
 
-    background(240);
+    background(180);
 
     strokeWeight(2)
     var centralLine = 50;
     line(windowWidth/2,windowHeight/2-centralLine,windowWidth/2,windowHeight/2+centralLine);
     line(windowWidth/2-centralLine,windowHeight/2,windowWidth/2+centralLine,windowHeight/2);
      
-    fill(210)
+    fill(255)
     circle(windowWidth/2,windowHeight/2,20);
     
     strokeWeight(1)
-    myJoystick1.draw();
     
         let [joystickX1,joystickY1] = myJoystick1.draw();
         
@@ -43,8 +42,7 @@ function draw() {
         fill(255,0,0)
         circle(x1,y1,20);
 
-    strokeWeight(1)
-    myJoystick2.draw()
+    strokeWeight(1);
 
         let [joystickX2,joystickY2] = myJoystick2.draw();
             
@@ -63,6 +61,11 @@ function draw() {
 function windowResized() {
 
     // fired when window is resized
-    resizeCanvas(windowWidth, windowHeight)
+    resizeCanvas(windowWidth, windowHeight);
+
+    // update joystick len 
+    myJoystick1.joyLen = windowWidth/6;
+    myJoystick2.joyLen = windowWidth/6;
+    myJoystick2.x0     = 2*x0 + myJoystick2.joyLen;
   
 };

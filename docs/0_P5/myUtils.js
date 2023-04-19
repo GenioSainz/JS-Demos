@@ -2,7 +2,7 @@
 
 let myUtils = {
     
-    drawGrid : function({cellSize = 50}={}){
+    drawGrid : function({cellSize = 50, ktxt = 1, center=false}={}){
 
         // This function draws a grid with a cellSize 
         // from (x,y)=(0,0) to (x,y)=(windowWidth,windowHeight)
@@ -10,17 +10,31 @@ let myUtils = {
         push()
     
             stroke(127,127,127);
-            fill(127);
+            fill(0);
   
-    
+             textAlign(LEFT,CENTER);textSize(12)
+            
             for (var x=0; x < width; x+=cellSize ) {
               line(x, -height, x, height);
-              text(x, x+1, cellSize /4);
+              text(x*ktxt, x+1, cellSize /4);
             };
+
             for (var y=0; y < height; y+=cellSize ) {
               line(-width, y, width, y);
-              text(y, 1, y+cellSize /4);
+              text(y*ktxt, 1, y+cellSize /4);
             };
+            
+            if(center){
+              for (var x=0; x > -width; x-=cellSize ) {
+                line(x, -height, x, height);
+                text(x*ktxt, x+1, cellSize /4);
+              };
+
+              for (var y=0; y > -height; y-=cellSize ) {
+                line(-width, y, width, y);
+                text(y*ktxt, 1, y+cellSize /4);
+              };
+            }
 
         pop()
 
@@ -104,7 +118,7 @@ let myUtils = {
 
 class Joystick{
 
-  constructor({x0=50, y0=50,joyLen=250,circleColor=[255,0,0]}={}){
+  constructor({x0=50, y0=50,joyLen=250,joystickX=0,joystickY=0,color=[255,0,0],drawCircle=true}={}){
 
     this.x0        = x0;
     this.y0        = y0;
@@ -114,11 +128,12 @@ class Joystick{
     this.xMed      = this.x0 + this.joyLen/2;
     this.yMed      = this.y0 + this.joyLen/2;
     this.ktxt      = 2; 
-    this.joystickX = 0;
-    this.joystickY = 0;
-    this.xJoysDraw = this.xMed;
-    this.yJoysDraw = this.yMed;
-    this.circleColor = circleColor;
+    this.joystickX = joystickX;
+    this.joystickY = joystickY;
+    this.xJoysDraw = this.xMed + this.joystickX * this.joyLen/2  ;
+    this.yJoysDraw = this.yMed + this.joystickY * this.joyLen/2;
+    this.color     = color;
+    this.drawCircle = drawCircle;
 
   };
 
@@ -128,7 +143,7 @@ class Joystick{
 
     push()
 
-      fill(210) // JOYSTIC Bounding box
+      fill(240) // JOYSTIC Bounding box
       rect(this.x0,this.y0,this.joyLen,this.joyLen,this.joyLen/25);
 
       strokeWeight(2)
@@ -137,8 +152,8 @@ class Joystick{
       myUtils.drawArrow([this.xMed, this.yMed],[this.xMax, this.yMed],{arrowHead:0.05}); // X DIRECCTION
       myUtils.drawArrow([this.xMed, this.yMed],[this.xMed, this.yMax],{arrowHead:0.05}); // Y DIRECCTION
     
-      var boolX = mouseX <= this.xMax+1 && mouseX >= this.x0-1;
-      var boolY = mouseY <= this.yMax+1 && mouseY >= this.y0-1;
+      var boolX = mouseX <= this.xMax && mouseX >= this.x0;
+      var boolY = mouseY <= this.yMax && mouseY >= this.y0;
 
       if (mouseIsPressed && (boolX && boolY)){
         
@@ -147,9 +162,12 @@ class Joystick{
           line(mouseX,this.y0,mouseX,this.yMax);
           line(this.x0,mouseY,this.xMax,mouseY);
 
-          //moving circle
-          fill(this.circleColor)
-          circle(mouseX,mouseY,this.joyLen/20);
+          // MOVING CIRCLE OR ARROW
+          if(this.drawCircle){
+            fill(this.color);circle(mouseX,mouseY,this.joyLen/20);
+          }else{
+            strokeWeight(2);myUtils.drawArrow([this.xMed,this.yMed],[this.xJoysDraw,this.yJoysDraw],{color:this.color})
+          };
           
           this.xJoysDraw = mouseX;
           this.yJoysDraw = mouseY;
@@ -157,10 +175,9 @@ class Joystick{
           this.joystickX = map(mouseX, this.x0, this.xMax, -1, 1);
           this.joystickY = map(mouseY, this.y0, this.yMax, -1, 1);
 
-          
           // TEXT (X,Y)
           fill(0);textSize(18);textAlign(CENTER,BOTTOM);strokeWeight(5)
-          text(`x: ${this.joystickY.toFixed(3)} y: ${this.joystickY.toFixed(3)}`, this.xMed, this.y0 - this.ktxt);
+          text(`x: ${this.joystickX.toFixed(3)} y: ${this.joystickY.toFixed(3)}`, this.xMed, this.y0 - this.ktxt);
       
 
           pop()
@@ -172,12 +189,17 @@ class Joystick{
           strokeWeight(1)
           line(this.xJoysDraw,this.y0,this.xJoysDraw,this.yMax);
           line(this.x0,this.yJoysDraw,this.xMax,this.yJoysDraw);
-          fill(this.circleColor)
-          circle(this.xJoysDraw,this.yJoysDraw,this.joyLen/20)
+          
+          // MOVING CIRCLE OR ARROW
+          if(this.drawCircle){
+            fill(this.color);circle(this.xJoysDraw,this.yJoysDraw,this.joyLen/20)
+          }else{
+            strokeWeight(2);myUtils.drawArrow([this.xMed,this.yMed],[this.xJoysDraw,this.yJoysDraw],{color:this.color})
+          };
           
           // TEXT (X,Y)
           fill(0);textSize(18);textAlign(CENTER,BOTTOM);strokeWeight(5)
-          text(`x: ${this.joystickY.toFixed(3)} y: ${this.joystickY.toFixed(3)}`, this.xMed, this.y0 - this.ktxt);
+          text(`x: ${this.joystickX.toFixed(3)} y: ${this.joystickY.toFixed(3)}`, this.xMed, this.y0 - this.ktxt);
 
           pop()
           
@@ -195,10 +217,8 @@ class Joystick{
     this.xMed      = this.x0 + this.joyLen/2;
     this.yMed      = this.y0 + this.joyLen/2;
     this.ktxt      = 2; 
-    this.joystickX = 0;
-    this.joystickY = 0;
-    this.xJoysDraw = this.xMed;
-    this.yJoysDraw = this.yMed;
+    this.xJoysDraw = this.xMed + this.joystickX*this.joyLen/2;
+    this.yJoysDraw = this.yMed + this.joystickY*this.joyLen/2;
 
 
   }

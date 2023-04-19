@@ -1,153 +1,73 @@
 
-
-var particle 
-let particleOptions = {drawPath:true,drawParticle:false,pathPoints:50};
-let particleAngle   = 0;
-let turningLeft     = false;
-let turningRight    = false;
-let thrusting       = false;
+var fr             = 30
+let ParticlesArray = [];
+let nParticles     = 20;
+let particleOptions = {drawPath:true,pathPoints:50}
 
 function setup() {
 
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES)
-  frameRate(30);
+  frameRate(fr);
   
-  particle = new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:0,v_d:0},{a_m:0.0,a_d:0},{r:100},particleOptions);
+  for(i=0;i<nParticles;i++){
+    
+      // var ace = 0.075
+      // p1 = new Particle({x:800,y:900}, {v_m:7.5,v_d:-95}, {a_m:0.035,a_d:90},{r:20});
+      // p2 = new Particle({x:800,y:900}, {v_m:7.5,v_d:-90}, {a_m:0.035,a_d:90},{r:20});
+      // p3 = new Particle({x:800,y:900}, {v_m:7.5,v_d:-85}, {a_m:0.035,a_d:90},{r:20});
 
-  keyEvents();
+      //ParticlesArray.push( new Particle({x:50,y:500} ,{v_m:7,v_d:-60},{a_m:ace,a_d:90},{r:20}) )
+      //ace+=0.005
+
+      //ParticlesArray.push( new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:random(6,12),v_d:random(-120,-60)},{a_m:0.0,a_d:90},{r:10}) )
+       //ParticlesArray.push( new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:random(4,8),v_d:random(0,360)},{a_m:0.05,a_d:90},{r:10},particleOptions) );
+      
+       ParticlesArray.push( new Particle({x:0,y:windowHeight/2} ,{v_m:random(4,8),v_d:random(-30,-80)},{a_m:0.025,a_d:90},{r:10},particleOptions) );
+  
+       //ParticlesArray.push( new Particle({x:0,y:windowHeight} ,{v_m:random(8,10),v_d:random(-50,-40)},{a_m:0.05,a_d:90},{r:10},particleOptions) )
+      }; 
 
 }
 
 function draw() {
   
-    background(240);strokeWeight(2);noFill()
-    myUtils.drawGrid();
-    fill(120)
+  background(240);strokeWeight(2);noFill()
+  
+  myUtils.drawGrid();
+  
+  fill(120)
 
-    if(turningLeft) {
-      particleAngle -= 5;
+  for(let i=0;i<nParticles;i++){
+     
+    ParticlesArray[i].update();
+    ParticlesArray[i].draw();
+
+    if(ParticlesArray[i].pos.y<=0 || ParticlesArray[i].pos.y>=windowHeight ){
+    
+         let vN = p5.Vector.fromAngle(-PI/2,1);
+         let vP = ParticlesArray[i].vel;
+         let  m = vP.mag();
+         let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
+         ParticlesArray[i].vel = new p5.Vector.fromAngle(d,m);
     };
-    if(turningRight) {
-      particleAngle += 5;
+
+    if(ParticlesArray[i].pos.x<=0 || ParticlesArray[i].pos.x>=windowWidth){
+    
+        let vN = p5.Vector.fromAngle(0,1);
+        let vP = ParticlesArray[i].vel;
+        let  m = vP.mag();
+        let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
+        ParticlesArray[i].vel = new p5.Vector.fromAngle(d,m);
     };
-
-    if(thrusting) {
-      particle.ace = new p5.Vector.fromAngle(particleAngle*PI/180,0.25);
-    }else {
-      particle.ace = new p5.Vector.fromAngle(particleAngle*PI/180,0);
-    };
-
-      
-    particle.update();
-    particle.draw();
-
-    var x = particle.pos.x;
-    var y = particle.pos.y;
-
-    drawShip(x,y);
-    collisionDetec(x,y)
 
 
   };
 
 
-function drawShip(x,y){
-
-  push()
-
-
-    translate(x,y)
-    rotate(particleAngle+90)
-    var len = 50;
-    var h   = tan(70)*len/2;
-
-    var x1 = - len/2;
-    var y1 =    h - 2*h/3
-
-    var x2 = 0;
-    var y2 = 0 - 2*h/3;
-
-    var x3 = + len/2
-    var y3 =   h - 2*h/3; 
-
-    myUtils.drawArrow([0,0],[0,-2*len],{color:[255,0,0]});
-
-    triangle(x1, y1, x2, y2, x3, y3);
-
-    if(thrusting) {
-      stroke(255,0,0)
-      line(0,y3,0,y3+h);
-      line(0,y3,len/2,y3+h);
-      line(0,y3,-len/2,y3+h);
-    }
-
-  pop()
-
 }
 
-function collisionDetec(x,y){
-
-    if( y<=0 || y>=windowHeight ){
-
-          let vN = p5.Vector.fromAngle(-PI/2,1);
-          let vP = particle.vel;
-          let  m = vP.mag();
-          let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
-          particle.vel = new p5.Vector.fromAngle(d,m);
-    };
-
-    if( x<=0 || x>=windowWidth){
-
-        let vN = p5.Vector.fromAngle(0,1);
-        let vP = particle.vel;
-        let  m = vP.mag();
-        let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
-        particle.vel = new p5.Vector.fromAngle(d,m);
-    };
-
-}
-
-function keyEvents(){
-
-  document.addEventListener("keydown", (event) => {
-    
-    if(event.code=="ArrowUp"){
-
-       thrusting = true;
-
-    }else if(event.code=="ArrowRight"){
-
-       turningRight = true;
-   
-    }else if(event.code=="ArrowLeft"){
-
-       turningLeft = true;
-    };
-
-  });
-
-  document.addEventListener("keyup", (event) => {
-    
-    if(event.code=="ArrowUp"){
-
-       thrusting = false;
-
-    }else if(event.code=="ArrowRight"){
-
-       turningRight = false;
-   
-    }else if(event.code=="ArrowLeft"){
-
-      turningLeft = false;
-    };
-    
-  });
-
-};
-
-
-function windowResized(){
+function windowResized() {
   // resize canvas
   resizeCanvas(windowWidth, windowHeight)
 

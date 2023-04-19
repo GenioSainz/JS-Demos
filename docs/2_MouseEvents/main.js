@@ -2,7 +2,7 @@
 
 let width  = 800;
 let height = 400
-let distance      = 20
+let distance = 20
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -12,7 +12,7 @@ function setup() {
 
 function draw() {
   
-  background(127,127,127);strokeWeight(3);
+  background(220);strokeWeight(3);
 
   for(let diameter=100;diameter<=windowHeight;diameter+=100){
 
