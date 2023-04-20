@@ -1,7 +1,7 @@
 
 var particle ;
 let particleOptions = {drawPath:true,drawParticle:false,pathPoints:50};
-let particleAngle   = 0;
+let particleAngle   = 0;              
 let turningLeft     = false;
 let turningRight    = false;
 let thrustingUp     = false;
@@ -14,7 +14,7 @@ function setup() {
   rectMode(CENTER)
   frameRate(30);
   
-  particle = new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:0,v_d:0},{a_m:0.0,a_d:0},{r:100},particleOptions);
+  particle = new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:0,v_d:0},{a_m:0.0,a_d:0},particleOptions);
 
   keyEvents();
 
@@ -34,7 +34,7 @@ function draw() {
     };
 
     if(thrustingUp) {
-      particle.ace = new p5.Vector.fromAngle(particleAngle*PI/180,0.25);
+      particle.ace = new p5.Vector.fromAngle( particleAngle*PI/180, 0.25 );
 
     }else if(thrustingDown){
        particle.ace = new p5.Vector.fromAngle( PI + particle.vel.heading(),0.3);
@@ -61,7 +61,7 @@ function drawVectorDiagram(circle_x,circle_y){
 
     // var circle_x = 150;
     // var circle_y = 200;
-    var circle_r = 100;
+    var circle_r = 100*0.95;
     
     var module_ace = particle.ace.mag();
     if(module_ace!=0){
@@ -156,19 +156,21 @@ function collisionDetec(x,y,{collisionSquare=true}={}){
 
         if( y<0 || y>windowHeight ){
 
-              let vN = p5.Vector.fromAngle(-PI/2,1);
-              let vP = particle.vel;
-              let  m = vP.mag();
-              let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
-              particle.vel = new p5.Vector.fromAngle(d,m);
+              // let vN = p5.Vector.fromAngle(-PI/2,1);
+              // let vP = particle.vel;
+              // let  m = vP.mag();
+              // let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
+              // particle.vel.y =  -1*particle.vel.y//  new p5.Vector.fromAngle(d,m);
+              particle.vel.y =  -1*particle.vel.y;
               
         }else if( x<0 || x>windowWidth){
 
-            let vN = p5.Vector.fromAngle(0,1);
-            let vP = particle.vel;
-            let  m = vP.mag();
-            let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
-            particle.vel = new p5.Vector.fromAngle(d,m);
+              // let vN = p5.Vector.fromAngle(0,1);
+              // let vP = particle.vel;
+              // let  m = vP.mag();
+              // let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
+              // particle.vel = new p5.Vector.fromAngle(d,m);
+              particle.vel.x =  -1*particle.vel.x;
         };
   // 360 MODE
   }else{ 

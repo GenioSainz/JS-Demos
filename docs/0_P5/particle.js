@@ -6,7 +6,7 @@ class Particle{
     // new p5.Vector([x], [y], [z]);
     // new p5.Vector.fromAngle(angle, [length]);
 
-    constructor(position, velocity, acceleration, radius,{drawPath=true,drawParticle=true,pathPoints=50}={}){
+    constructor(position, velocity, acceleration,{radius=10,drawPath=true,drawParticle=true,pathPoints=50}={}){
 
         this.x    = position.x;                   // position x
         this.y    = position.y;                   // position y
@@ -14,11 +14,11 @@ class Particle{
         this.v_d  = velocity.v_d*Math.PI/180;     // velocity direction
         this.a_m  = acceleration.a_m;             // acceleration module
         this.a_d  = acceleration.a_d*Math.PI/180; // acceleration direction
-        this.r    = radius.r;                     // particle radius
-        this.pos  = new p5.Vector(this.x,this.y);
-        this.vel  = new p5.Vector.fromAngle(this.v_d,this.v_m);
-        this.ace  = new p5.Vector.fromAngle(this.a_d,this.a_m);
-        this.path = [];
+        this.radius = radius;                      // particle radius
+        this.pos    = new p5.Vector(this.x,this.y);
+        this.vel    = new p5.Vector.fromAngle(this.v_d,this.v_m);
+        this.ace    = new p5.Vector.fromAngle(this.a_d,this.a_m);
+        this.path   = [];
         this.drawPath     = drawPath;
         this.drawParticle = drawParticle;
         this.pathPoints   = pathPoints;
@@ -79,7 +79,7 @@ class Particle{
         
         // draw particle
         if(this.drawParticle){
-           circle(this.pos.x,this.pos.y,2*this.r);
+           circle(this.pos.x,this.pos.y,2*this.radius);
         };
 
       };
@@ -123,7 +123,7 @@ class ParticleMass{
   // new p5.Vector([x], [y], [z]);
   // new p5.Vector.fromAngle(angle, [length]);
 
-  constructor(position, velocity, acceleration,{mass=1,radiusCircle=20,drawPath=true,drawParticle=true,pathPoints=50,arrowLen=50,color=[127,127,127]}={}){
+  constructor(position, velocity, acceleration,{mass=1,radius=10,drawPath=true,drawParticle=true,pathPoints=50,arrowLen=50,color=[127,127,127]}={}){
 
       this.x    = position.x;                   // position x
       this.y    = position.y;                   // position y
@@ -141,7 +141,7 @@ class ParticleMass{
       this.drawPath     = drawPath;
       this.drawParticle = drawParticle;
       this.pathPoints   = pathPoints;
-      this.radiusCircle = radiusCircle;                     // particle radius
+      this.radius = radius;                     // particle radius
       this.arrowLen     = arrowLen;
       this.color        = color;
   
@@ -202,7 +202,7 @@ class ParticleMass{
       // draw particle
       if(this.drawParticle){
          fill(this.color);
-         circle(this.pos.x,this.pos.y,2*this.radiusCircle);
+         circle(this.pos.x,this.pos.y,2*this.radius);
       };
 
     };

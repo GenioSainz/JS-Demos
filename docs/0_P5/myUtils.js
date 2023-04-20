@@ -2,7 +2,7 @@
 
 let myUtils = {
     
-    drawGrid : function({cellSize = 50, ktxt = 1, center=false}={}){
+    drawGrid : function({cellSize = 50, ktxt = 1, center=false,fillText=0}={}){
 
         // This function draws a grid with a cellSize 
         // from (x,y)=(0,0) to (x,y)=(windowWidth,windowHeight)
@@ -10,9 +10,7 @@ let myUtils = {
         push()
     
             stroke(127,127,127);
-            fill(0);
-  
-             textAlign(LEFT,CENTER);textSize(12)
+            fill(fillText);textAlign(LEFT,CENTER);textSize(12)
             
             for (var x=0; x < width; x+=cellSize ) {
               line(x, -height, x, height);
@@ -118,7 +116,7 @@ let myUtils = {
 
 class Joystick{
 
-  constructor({x0=50, y0=50,joyLen=250,joystickX=0,joystickY=0,color=[255,0,0],drawCircle=true}={}){
+  constructor({x0=50, y0=50,joyLen=250,joystickX=0,joystickY=0,color=[255,0,0], fillValue=240,fillText=0, drawCircle=true}={}){
 
     this.x0        = x0;
     this.y0        = y0;
@@ -134,6 +132,8 @@ class Joystick{
     this.yJoysDraw = this.yMed + this.joystickY * this.joyLen/2;
     this.color     = color;
     this.drawCircle = drawCircle;
+    this.fillValue  = fillValue;
+    this.fillText   = fillText;
 
   };
 
@@ -143,7 +143,7 @@ class Joystick{
 
     push()
 
-      fill(240) // JOYSTIC Bounding box
+      fill( this.fillValue ) // JOYSTIC Bounding box 
       rect(this.x0,this.y0,this.joyLen,this.joyLen,this.joyLen/25);
 
       strokeWeight(2)
@@ -176,7 +176,7 @@ class Joystick{
           this.joystickY = map(mouseY, this.y0, this.yMax, -1, 1);
 
           // TEXT (X,Y)
-          fill(0);textSize(18);textAlign(CENTER,BOTTOM);strokeWeight(5)
+          fill(this.fillText);textSize(18);textAlign(CENTER,BOTTOM);strokeWeight(5)
           text(`x: ${this.joystickX.toFixed(3)} y: ${this.joystickY.toFixed(3)}`, this.xMed, this.y0 - this.ktxt);
       
 
@@ -198,7 +198,7 @@ class Joystick{
           };
           
           // TEXT (X,Y)
-          fill(0);textSize(18);textAlign(CENTER,BOTTOM);strokeWeight(5)
+          fill(this.fillText);textSize(18);textAlign(CENTER,BOTTOM);strokeWeight(5)
           text(`x: ${this.joystickX.toFixed(3)} y: ${this.joystickY.toFixed(3)}`, this.xMed, this.y0 - this.ktxt);
 
           pop()

@@ -19,8 +19,7 @@ function setup() {
   
 function draw() {
 
-    background(180);
-
+    background(255);
     strokeWeight(2)
     var centralLine = 50;
     line(windowWidth/2,windowHeight/2-centralLine,windowWidth/2,windowHeight/2+centralLine);
