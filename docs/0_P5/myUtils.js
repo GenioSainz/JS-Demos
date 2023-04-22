@@ -116,7 +116,7 @@ let myUtils = {
 
 class Joystick{
 
-  constructor({x0=50, y0=50,joyLen=250,joystickX=0,joystickY=0,color=[255,0,0], fillValue=240,fillText=0, drawCircle=true}={}){
+  constructor({x0=50, y0=50,joyLen=250,joystickX=0,joystickY=0,color=[255,0,0], fillValue=240,fillText=0, drawCircle=true,strokeBox=false}={}){
 
     this.x0        = x0;
     this.y0        = y0;
@@ -134,6 +134,7 @@ class Joystick{
     this.drawCircle = drawCircle;
     this.fillValue  = fillValue;
     this.fillText   = fillText;
+    this.strokeBox  = strokeBox;
 
   };
 
@@ -144,7 +145,11 @@ class Joystick{
     push()
 
       fill( this.fillValue ) // JOYSTIC Bounding box 
-      rect(this.x0,this.y0,this.joyLen,this.joyLen,this.joyLen/25);
+      if(this.strokeBox){
+         push();stroke(this.color);strokeWeight(2);rect(this.x0,this.y0,this.joyLen,this.joyLen,this.joyLen/25);pop();
+      }else{
+         push();stroke(0);strokeWeight(2);rect(this.x0,this.y0,this.joyLen,this.joyLen,this.joyLen/25);pop();
+      }
 
       strokeWeight(2)
       line(this.x0 ,this.yMed, this.xMax, this.yMed);  // X AXIS

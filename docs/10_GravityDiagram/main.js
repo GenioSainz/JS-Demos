@@ -36,12 +36,12 @@ function setup() {
     gui.addGlobals('nIterations','massRatio','drawMode');
      
     // INIT JOYSTICK
-    myJoystick  = new Joystick( {x0:x0, y0: y0, joyLen: joyLen, joystickX:-0.65, joystickY:0, drawCircle:false,color:[0,0,255], fillValue:230,fillText:255});
+    myJoystick  = new Joystick( {x0:x0, y0: y0, joyLen: joyLen, joystickX:-0.8, joystickY:-0.3, drawCircle:false,color:[0,0,255], fillValue:230,fillText:255,strokeBox:true});
 
     // INIT SUN AND PLANET COORDINATES
     sun         = createVector(windowWidth/2,windowHeight/2);
     planet_x    = sun.x;
-    planet_y    = sun.y-250;
+    planet_y    = sun.y-200;
 
 };
 
@@ -90,8 +90,8 @@ function draw() {
         //////////////////////////////////////////////////////////////
         fill(255);circle(planet_x,planet_y,2*planet_r);fill(0);text('M2',planet_x,planet_y);
         
-        var boolX = mouseX >=  planet_x-planet_r &&  mouseX <=  planet_x+planet_r
-        var boolY = mouseY >=  planet_y-planet_r &&  mouseY <=  planet_y+planet_r
+        var boolX  = mouseX >=  planet_x-planet_r &&  mouseX <=  planet_x+planet_r;
+        var boolY  = mouseY >=  planet_y-planet_r &&  mouseY <=  planet_y+planet_r;
 
         if( mouseIsPressed && ( boolX && boolY )){
             planet_x = mouseX;
@@ -142,6 +142,8 @@ function draw() {
             var vel_2 = [v.x+P[i].x,v.y+P[i].y];
 
             if(drawMode=='Vector Diagram'){
+
+                noFill();strokeWeight(1);circle(planet.x,planet.y,2*planet_r)
                 
                 // V0
                 myUtils.drawArrow(v0_1,v0_2,{color:[0,0,255],arrowHead:0.05});
@@ -157,11 +159,13 @@ function draw() {
                 
                 // V1
                 myUtils.drawArrow(vel_1,vel_2,{color:[0,255,0],arrowHead:0.05});
-                fill(0,255,0);stroke(0);text(`v${i+1}`,(vel_1[0]+vel_2[0])/2,(vel_1[1]+vel_2[1])/2)
+                fill(0,255,0);stroke(0);text(`v${i+1}`,(vel_1[0]+vel_2[0])/2,(vel_1[1]+vel_2[1])/2);
+
+                
             
             }else{
 
-                fill(255);circle(vel_2[0],vel_2[1],2*planet_r);//fill(0);text('M2',planet_x,planet_y);
+                noFill();strokeWeight(1);circle(vel_2[0],vel_2[1],2*planet_r);//fill(0);text('M2',planet_x,planet_y);
 
             }
 

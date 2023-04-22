@@ -15,8 +15,8 @@ function setup() {
     joyLen = 200
 
     myJoystick1 = new Joystick( {x0: x0,            y0: y0, joyLen: joyLen, joystickX:-0.500, joystickY:+0.500, drawCircle:true, color:[0,255,0], fillValue:230});
-    myJoystick2 = new Joystick( {x0: 2*x0+1*joyLen, y0: y0, joyLen: joyLen, joystickX:-0.300, joystickY:-0.800, drawCircle:false,color:[0,0,255], fillValue:230});
-    myJoystick3 = new Joystick( {x0: 3*x0+2*joyLen, y0: y0, joyLen: joyLen, joystickX:+0.500, joystickY:+0.200, drawCircle:false,color:[255,0,0], fillValue:230});
+    myJoystick2 = new Joystick( {x0: 2*x0+1*joyLen, y0: y0, joyLen: joyLen, joystickX:-0.300, joystickY:-0.800, drawCircle:false,color:[0,0,255], fillValue:230, strokeBox:true});
+    myJoystick3 = new Joystick( {x0: 3*x0+2*joyLen, y0: y0, joyLen: joyLen, joystickX:+0.500, joystickY:+0.200, drawCircle:false,color:[255,0,0], fillValue:230, strokeBox:true});
 
 }
 
