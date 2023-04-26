@@ -1,8 +1,11 @@
 
-var fr             = 30
+var fr             = 30;
 let ParticlesArray = [];
 let nParticles     = 20;
-let particleOptions = {drawPath:true,pathPoints:50}
+let particleOptions = {kd:0.001,
+                       radius:15,arrowLen:40,
+                       drawPath:true,pathColor:[0,0,0],pathPoints:50}
+
 
 function setup() {
 
@@ -23,12 +26,12 @@ function setup() {
       //ParticlesArray.push( new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:random(6,12),v_d:random(-120,-60)},{a_m:0.0,a_d:90},{r:10}) )
        //ParticlesArray.push( new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:random(4,8),v_d:random(0,360)},{a_m:0.05,a_d:90},{r:10},particleOptions) );
       
-       ParticlesArray.push( new Particle({x:0,y:windowHeight/2} ,{v_m:random(4,8),v_d:random(-30,-80)},{a_m:0.025,a_d:90},{r:10},particleOptions) );
+       ParticlesArray.push( new Particle( {x:0,y:windowHeight/2} ,{v_m:random(15,20),v_d:random(-30,-80)}, {g:0.05}, particleOptions) );
   
        //ParticlesArray.push( new Particle({x:0,y:windowHeight} ,{v_m:random(8,10),v_d:random(-50,-40)},{a_m:0.05,a_d:90},{r:10},particleOptions) )
-      }; 
+  }; 
 
-}
+};
 
 function draw() {
   
@@ -36,36 +39,27 @@ function draw() {
   
   myUtils.drawGrid();
   
+  line(100,50,200,undefined)
   fill(120)
 
   for(let i=0;i<nParticles;i++){
      
+    
+    var d = ParticlesArray[i].dragForce();
+    var g = ParticlesArray[i].gravity;
+    ParticlesArray[i].applyForces([d,g]);
     ParticlesArray[i].update();
     ParticlesArray[i].draw();
-
-    if(ParticlesArray[i].pos.y<=0 || ParticlesArray[i].pos.y>=windowHeight ){
-    
-         let vN = p5.Vector.fromAngle(-PI/2,1);
-         let vP = ParticlesArray[i].vel;
-         let  m = vP.mag();
-         let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
-         ParticlesArray[i].vel = new p5.Vector.fromAngle(d,m);
-    };
-
-    if(ParticlesArray[i].pos.x<=0 || ParticlesArray[i].pos.x>=windowWidth){
-    
-        let vN = p5.Vector.fromAngle(0,1);
-        let vP = ParticlesArray[i].vel;
-        let  m = vP.mag();
-        let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
-        ParticlesArray[i].vel = new p5.Vector.fromAngle(d,m);
-    };
-
+  
+    //ParticlesArray[i].checkEdgesBounceRadius();
+    ParticlesArray[i].checkEdgesBounceCentroid()
+    //ParticlesArray[i].checkEdgesWrap();
 
   };
 
 
 }
+
 
 function windowResized() {
   // resize canvas

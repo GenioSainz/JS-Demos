@@ -9,7 +9,7 @@ let myUtils = {
 
         push()
     
-            stroke(127,127,127);
+            stroke(127,127,127);strokeWeight(2)
             fill(fillText);textAlign(LEFT,CENTER);textSize(12)
             
             for (var x=0; x < width; x+=cellSize ) {
@@ -154,8 +154,8 @@ class Joystick{
       strokeWeight(2)
       line(this.x0 ,this.yMed, this.xMax, this.yMed);  // X AXIS
       line(this.xMed, this.y0, this.xMed, this.yMax ); // Y AXIS
-      myUtils.drawArrow([this.xMed, this.yMed],[this.xMax, this.yMed],{arrowHead:0.05}); // X DIRECCTION
-      myUtils.drawArrow([this.xMed, this.yMed],[this.xMed, this.yMax],{arrowHead:0.05}); // Y DIRECCTION
+      //myUtils.drawArrow([this.xMed, this.yMed],[this.xMax, this.yMed],{arrowHead:0.05}); // X DIRECCTION
+      //myUtils.drawArrow([this.xMed, this.yMed],[this.xMed, this.yMax],{arrowHead:0.05}); // Y DIRECCTION
     
       var boolX = mouseX <= this.xMax && mouseX >= this.x0;
       var boolY = mouseY <= this.yMax && mouseY >= this.y0;

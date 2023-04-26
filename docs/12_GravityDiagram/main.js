@@ -1,5 +1,4 @@
 
-
 // MAIN VARIABLES
 ///////////////////
 var joyLen,gui,myJoystick;
@@ -161,7 +160,6 @@ function draw() {
                 myUtils.drawArrow(vel_1,vel_2,{color:[0,255,0],arrowHead:0.05});
                 fill(0,255,0);stroke(0);text(`v${i+1}`,(vel_1[0]+vel_2[0])/2,(vel_1[1]+vel_2[1])/2);
 
-                
             
             }else{
 

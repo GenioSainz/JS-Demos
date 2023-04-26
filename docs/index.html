@@ -25,22 +25,41 @@
   <body>
 
     <div class="list-group mx-4 my-4">
-      <a                                       class="list-group-item list-group-item-action list-group-item-secondary">Basic P5.js DEMOS</a>
-      <a href="1_LinesMove/index.html"   class="list-group-item list-group-item-action list-group-item-success">1_LinesMove</a>
-      <a href="2_MouseEvents/index.html" class="list-group-item list-group-item-action list-group-item-success">2_MouseEvents</a>
-      <a href="3_Arrow/index.html"       class="list-group-item list-group-item-action list-group-item-success">3_Arrow</a>
-      <a href="4_Ellipse/index.html"     class="list-group-item list-group-item-action list-group-item-success">4_Ellipse</a>
-      <a href="5_Joystick/index.html"    class="list-group-item list-group-item-action list-group-item-success">5_Joystick</a>
-      <a href="6_EulerJoystick/index.html"    class="list-group-item list-group-item-action list-group-item-success">6_EulerJoystick</a>
+      <a                                        class="list-group-item list-group-item-action list-group-item-secondary">Basic P5.js DEMOS</a>
+      <a href="1_LinesMove/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="2_MouseEvents/index.html"        class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="3_Arrow/index.html"              class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="4_Ellipse/index.html"            class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="5_Joystick/index.html"           class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="6_EulerJoystick/index.html"      class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="7_LissajousCurve/index.html"     class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="8_CollisionDetection/index.html" class="list-group-item list-group-item-action list-group-item-success"></a>
     </div>
 
     <div class="list-group mx-4 my-4">
-      <a                                 class="list-group-item list-group-item-action list-group-item-secondary">Simulations P5.js DEMOS</a>
-      <a href="7_Particles/index.html"   class="list-group-item list-group-item-action list-group-item-success">7_Particles</a>
-      <a href="8_Ship2D/index.html"      class="list-group-item list-group-item-action list-group-item-success">8_Ship2D</a>
-      <a href="9_Gravity2D/index.html"   class="list-group-item list-group-item-action list-group-item-success">9_Gravity2D</a>
-      <a href="10_GravityDiagram/index.html"   class="list-group-item list-group-item-action list-group-item-success">10_GravityVectorDiagram</a>
+      <a                                      class="list-group-item list-group-item-action list-group-item-secondary">Simulations P5.js DEMOS</a>
+      <a href="9_Particles/index.html"        class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="10_Ship2D/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="11_Gravity2D/index.html"       class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="12_GravityDiagram/index.html"  class="list-group-item list-group-item-action list-group-item-success"></a>
     </div>
    
   </body>
+
+  <script>
+
+    var list =  document.querySelectorAll('a');
+    var n    = 1;
+    list.forEach((a)=>{
+
+        if(a.href != ''){
+
+           a.innerHTML = a.href.split('/').slice(-2,-1)
+        }
+
+    })
+
+
+  </script>
+
 </html>

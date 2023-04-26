@@ -1,11 +1,18 @@
 
 var particle ;
-let particleOptions = {drawPath:true,drawParticle:false,pathPoints:50};
+let particleOptions = {drawPath:true,pathPoints:50,drawParticle:false,drawArrow:false,kd:0.002};
 let particleAngle   = 0;              
 let turningLeft     = false;
 let turningRight    = false;
 let thrustingUp     = false;
 let thrustingDown   = false;
+var thrus;
+var gui;
+
+var g    = 10;
+var gMin = 10;
+var gMax = 200;
+var gStep = 1;
 
 function setup() {
 
@@ -14,9 +21,11 @@ function setup() {
   rectMode(CENTER)
   frameRate(30);
   
-  particle = new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:0,v_d:0},{a_m:0.0,a_d:0},particleOptions);
+  particle = new Particle({x:windowWidth/2,y:windowHeight/2} ,{v_m:0,v_d:0},{g:0.00},particleOptions);
 
   keyEvents();
+  // gui = createGui('Gravity').setPosition(windowWidth/2,50);
+  // gui.addGlobals('g');
 
 }
 
@@ -34,24 +43,24 @@ function draw() {
     };
 
     if(thrustingUp) {
-      particle.ace = new p5.Vector.fromAngle( particleAngle*PI/180, 0.25 );
+      thrus =  new p5.Vector.fromAngle( particleAngle*PI/180, 0.25 );
 
     }else if(thrustingDown){
-       particle.ace = new p5.Vector.fromAngle( PI + particle.vel.heading(),0.3);
+      thrus = new p5.Vector.fromAngle( PI + particle.vel.heading(),0.3);
 
     }else {
-      particle.ace = new p5.Vector.fromAngle(0,0);
+      thrus = new p5.Vector.fromAngle(0,0);
     };
 
-      
+    var d =  particle.dragForce();
+    var g =  particle.gravity;
+
+    particle.applyForces([d,g,thrus]);
     particle.update();
+    particle.checkEdgesBounceCentroid();
     particle.draw();
 
-    var x = particle.pos.x;
-    var y = particle.pos.y;
-
-    drawShip(x,y);
-    collisionDetec(x,y,{collisionSquare:true});
+    drawShip(particle.pos.x,particle.pos.y);
     drawVectorDiagram(150,200);
     drawKeys(125,300);
 
@@ -59,13 +68,11 @@ function draw() {
 
 function drawVectorDiagram(circle_x,circle_y){
 
-    // var circle_x = 150;
-    // var circle_y = 200;
     var circle_r = 100*0.95;
     
-    var module_ace = particle.ace.mag();
-    if(module_ace!=0){
-      module_ace = circle_r
+    var module_thrus = thrus.mag();
+    if(module_thrus!=0){
+      module_thrus = circle_r
     };
     
     var max_v      = 15;
@@ -84,7 +91,7 @@ function drawVectorDiagram(circle_x,circle_y){
         line(circle_x-3*circle_r/4,circle_y,circle_x+3*circle_r/4,circle_y);
 
       strokeWeight(2);
-      myUtils.drawArrow([circle_x,circle_y],[circle_x + particle.ace.x,circle_y + particle.ace.y,],{module:module_ace,color:[255,255,0], arrowHead:0.1});
+      myUtils.drawArrow([circle_x,circle_y],[circle_x + particle.ace.x,circle_y + particle.ace.y,],{module:module_thrus,color:[255,255,0], arrowHead:0.1});
       myUtils.drawArrow([circle_x,circle_y],[circle_x + particle.vel.x,circle_y + particle.vel.y,],{module:module_vel,color:[0,0,255], arrowHead:0.2});
 
     pop();
@@ -98,7 +105,7 @@ function drawVectorDiagram(circle_x,circle_y){
 
       textAlign(CENTER,CENTER);textSize(15)
       fill(255,255,0);
-      text('Aceleration Vector',circle_x, circle_y - circle_r - 35);
+      text('Thrust Vector',circle_x, circle_y - circle_r - 35);
       fill(0,0,255);
       text('Velocity Vector'   ,circle_x, circle_y - circle_r - 15);
       push();
@@ -110,7 +117,6 @@ function drawVectorDiagram(circle_x,circle_y){
 function drawShip(x,y){
 
   push()
-
 
     translate(x,y)
     rotate(particleAngle+90)
@@ -128,11 +134,11 @@ function drawShip(x,y){
 
     myUtils.drawArrow([0,0],[0,-2*len],{color:[255,0,0]});
 
-    fill(180);        triangle(x1, y1, x2, y2, x3, y3);
+    fill(180);triangle(x1, y1, x2, y2, x3, y3);
     fill(255,255,255);circle(0,0,len/5);
     
     if(thrustingUp) {
-      line(0,y3,0,y3+h);
+      //line(0,y3,0,y3+h);
       line(0,y3,len/4,y3+h);
       line(0,y3,-len/4,y3+h);
       // line(x2,y2,x2-len,len*sin(30));line(x2,y2,x2-len,len*sin(60));
@@ -141,57 +147,13 @@ function drawShip(x,y){
       line(x1,y1,x1-sin(30)*len,y1-len*cos(30));
       line(x1,y1,x1-sin(45)*len,y1-len*cos(45));
       line(x3,y1,x3+sin(30)*len,y1-len*cos(30));
-      line(x3,y1,x3+sin(45)*len,y1-len*cos(45));
-      
+      line(x3,y1,x3+sin(45)*len,y1-len*cos(45)); 
     }
     
   pop()
 
 };
 
-function collisionDetec(x,y,{collisionSquare=true}={}){
-
-   // SQUARE MODE
-  if(collisionSquare){
-
-        if( y<0 || y>windowHeight ){
-
-              // let vN = p5.Vector.fromAngle(-PI/2,1);
-              // let vP = particle.vel;
-              // let  m = vP.mag();
-              // let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
-              // particle.vel.y =  -1*particle.vel.y//  new p5.Vector.fromAngle(d,m);
-              particle.vel.y =  -1*particle.vel.y;
-              
-        }else if( x<0 || x>windowWidth){
-
-              // let vN = p5.Vector.fromAngle(0,1);
-              // let vP = particle.vel;
-              // let  m = vP.mag();
-              // let  d = vP.heading() + PI - 2*vN.angleBetween(vP);
-              // particle.vel = new p5.Vector.fromAngle(d,m);
-              particle.vel.x =  -1*particle.vel.x;
-        };
-  // 360 MODE
-  }else{ 
-
-        if( y<0 ){
-          particle.pos = createVector(x,windowHeight);
-
-        }else if(y>windowHeight){
-          particle.pos = createVector(x,0);
-
-        }else if(x<0){
-          particle.pos = createVector(windowWidth,y);
-
-        }else if(x>windowWidth){
-          particle.pos = createVector(0,y);
-
-        };
-
-  }
-
-};
 
 function keyEvents(){
 
