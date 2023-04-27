@@ -111,6 +111,37 @@ let myUtils = {
       }
 
     },
+
+    roundGrid: function(gridCellSize){
+
+    xCenter = Math.round(0.5*windowWidth/gridCellSize)*gridCellSize;
+    yCenter = Math.round(0.5*windowHeight/gridCellSize)*gridCellSize;
+    
+    return {xCenter,yCenter}
+
+    },
+
+    randColor: function(){
+     
+      // nomber from [0,255];
+      var r = Math.floor( Math.random()*255 + 1);
+      var g = Math.floor( Math.random()*255 + 1);
+      var b = Math.floor( Math.random()*255 + 1);
+
+      return [r,g,b]
+    },
+
+    linspace: function(a,b,n){
+
+      var arr = [];
+      var step = (b - a) / (n - 1);
+      for (var i = 0; i < n; i++) {
+        arr.push(a+ (step * i));
+      }
+      return arr;
+    
+    }
+
 };
 
 
