@@ -112,12 +112,12 @@ let myUtils = {
 
     },
 
-    roundGrid: function(gridCellSize){
+    roundGrid: function(gridCellSize,xpos,ypos){
 
-    xCenter = Math.round(0.5*windowWidth/gridCellSize)*gridCellSize;
-    yCenter = Math.round(0.5*windowHeight/gridCellSize)*gridCellSize;
+                xGrid = Math.round(xpos/gridCellSize)*gridCellSize;
+                yGrid = Math.round(ypos/gridCellSize)*gridCellSize;
     
-    return {xCenter,yCenter}
+    return {xGrid,yGrid}
 
     },
 

@@ -2,7 +2,7 @@
 var sun;
 var planets = [];
 var sunOptions    = {mass:10e3, drawPath:false,drawArrow:false,radius:25,color:[255,255,0]};
-var planetOptions = {mass:1,    drawPath:true,pathPoints:500,arrowLen:50,radius:10,color:[0,255,0],pathColor:[0,0,0]};
+var planetOptions = {mass:1,vfriction:1,drawPath:true,pathPoints:500,arrowLen:50,radius:10,color:[0,255,0],pathColor:[0,0,0]};
 
 function setup() {
 
@@ -31,9 +31,11 @@ function draw() {
     
     // draw planets
     planets.forEach(planet => {
-      planet.ace = planet.gravityTo(sun);
+
+      planet.applyForces([ planet.gravityTo(sun)]);
       planet.update();
       planet.draw();
+      
     });
 
 

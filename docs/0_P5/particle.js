@@ -6,7 +6,7 @@ class Particle{
   // new p5.Vector([x], [y], [z]);
   // new p5.Vector.fromAngle(angle, [length]);
 
-  constructor(position, velocity, gravity,{mass=1,radius=20,kd=0.1,k=0.1,c=0.1,
+  constructor(position, velocity, gravity,{mass=1,radius=20,vfriction=0.99,kd=0.1,k=0.1,c=0.1,
                                                 color=[127,127,127],
                                                 drawPath=false,pathPoints=50,pathColor=[255,0,0],
                                                 drawParticle = true,
@@ -18,11 +18,12 @@ class Particle{
       this.v_d     = velocity.v_d*Math.PI/180;     // velocity direction
       this.mass    = mass;                         // mass
       this.radius  = radius;                       // particle radius
-
-      this.kd      = kd;                           // drag coefficient
-      this.k       = k;                            // spring cte
-      this.c       = c;                            // damping force
-      this.color   = color;
+      
+      this.vfriction = vfriction;
+      this.kd        = kd;                           // drag coefficient
+      this.k         = k;                            // spring cte
+      this.c         = c;                            // damping force
+      this.color     = color;
 
       this.pos     = new p5.Vector(this.x,this.y);               // position     vector
       this.vel     = new p5.Vector.fromAngle(this.v_d,this.v_m); // velocity     vector
@@ -45,6 +46,7 @@ class Particle{
     update(){
 
       this.vel = p5.Vector.add(this.vel,this.ace);
+      this.vel.mult(this.vfriction);
       this.pos = p5.Vector.add(this.pos,this.vel);
 
     };
@@ -72,22 +74,10 @@ class Particle{
         return dragVector;
     };
 
-    springForce(springX,springY){
-      
-         // F = -k*x - c*v
-         var springVector  = new p5.Vector((springX-this.pos.x),(springY-this.pos.y));
-         var springModule  = this.k*springVector.mag();
-         var dampingModule = this.c*this.vel.mag();
-         
-             springVector.normalize();
-             springVector.mult( springModule + dampingModule );
+    
+    springForce(springX,springY,springLength=100){
 
-        return springVector
-
-    };
-
-    springForceOffset(springX,springY,springLength){
-      
+      // springTO point (springX,springY)---springLength---particle
       // F = -k*x - c*v
       var springVector  = new p5.Vector((springX-this.pos.x),(springY-this.pos.y));
           springVector.setMag(springVector.mag()-springLength);
@@ -104,7 +94,7 @@ class Particle{
 
     static spring(p1,p2,separation){
            
-      var springVector  = new p5.Vector((p1.x-p2.x),(p1.y-p2.y));
+      var springVector  = new p5.Vector((p1.pos.x-p2.pos.x),(p1.pos.y-p2.pos.y));
           springVector.setMag(springVector.mag()-separation);
 
       var springModule  = p1.k*springVector.mag();
@@ -125,7 +115,7 @@ class Particle{
 
     distanceTo(p2){
           
-         return Math.sqrt( (p2.x-this.pos.x)**2 + (p2.y-this.pos.y)**2)
+         return Math.sqrt( (p2.pos.x-this.pos.x)**2 + (p2.pos.y-this.pos.y)**2)
     };
 
     gravityTo(p2){
@@ -249,7 +239,19 @@ class Particle{
       };
 
     };
+    
+    static particleDetection(particle){
+    
+      if( mouseIsPressed){
+       
+           var boolDistance = sqrt((mouseX-particle.pos.x)**2+(mouseY-particle.pos.y)**2)<=particle.radius;
 
+           if(boolDistance){
+                particle.pos.x  = mouseX;
+                particle.pos.y  = mouseY;
+           };
+      };
+    };
 
 
 
