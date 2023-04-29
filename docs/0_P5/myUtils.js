@@ -9,7 +9,7 @@ let myUtils = {
 
         push()
     
-            stroke(127,127,127);strokeWeight(2)
+            stroke(127,127,127);strokeWeight(1)
             fill(fillText);textAlign(LEFT,CENTER);textSize(12)
             
             for (var x=0; x < width; x+=cellSize ) {
