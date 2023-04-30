@@ -101,7 +101,7 @@ function vector_p0p1t(p0,p1,t,rPoint,{radius=rPoint,drawt=false,color=[255,0,0]}
 
 function pointDetection(p,r){
 
-    if( mouseIsPressed)
+    if( mouseIsPressed){
           
       var boolDistance = sqrt((mouseX-p.x)**2+(mouseY-p.y)**2)<=5*r;
 
@@ -111,11 +111,11 @@ function pointDetection(p,r){
 
           p.x = xGrid; //mouseX;
           p.y = yGrid; //mouseY;
-
           //  p.x = mouseX;
           //  p.y = mouseY;
           calcBezierArray([p0,p1,p2,p3,p4],t);
       }
+    }
 
 };
 

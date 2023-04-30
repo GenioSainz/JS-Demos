@@ -53,10 +53,10 @@ function draw() {
   var pt_12_23 = vector_p0p1t(pt_12,pt_23,t,rPoint,{color:[0,0,255]});
                  vector_p0p1t(pt_01_12,pt_12_23,t,rPoint,{color:[0,255,0],drawt:true});
 
-}
+};
 
 
-function vector_p0p1t(p0,p1,t,rPoint,{drawt=false,color=[255,0,0]}={}){
+function vector_p0p1t(p0,p1,t,rPoint,{drawt=false,color=[255,0,0]}={})
           
           /// v01 = p0 --> p1
           //   p1 = p0 + v01
@@ -68,15 +68,15 @@ function vector_p0p1t(p0,p1,t,rPoint,{drawt=false,color=[255,0,0]}={}){
           stroke(color);
           fill(color);line(p0.x,p0.y,p1.x,p1.y); 
           stroke(0)                                  // line p0 --> p1
-          fill(color);circle(p0.x,p0.y,2*rPoint);                   // p0 point
-          fill(color);circle(p1.x,p1.y,2*rPoint);                   // p1 point
+          fill(color);circle(p0.x,p0.y,2*rPoint);    // p0 point
+          fill(color);circle(p1.x,p1.y,2*rPoint);    // p1 point
 
           if(drawt){
-             circle(pt.x,pt.y,rPoint);             // pt point
+             circle(pt.x,pt.y,rPoint);               // pt point
           };
 
           return pt
-};
+;
 
 
 
