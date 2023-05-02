@@ -25,25 +25,27 @@
   <body>
     
     <div class="list-group mx-4 my-4">
-      <a                                        class="list-group-item list-group-item-action list-group-item-secondary">Basic P5.js DEMOS</a>
-      <a href="1_LinesMove/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="2_MouseEvents/index.html"        class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="3_Arrow/index.html"              class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="4_Ellipse/index.html"            class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="5_Joystick/index.html"           class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="6_EulerJoystick/index.html"      class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="7_LissajousCurve/index.html"     class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="8_CollisionDetection/index.html" class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a                                        class="list-group-item list-group-item-action list-group-item-secondary">Topics P5.js DEMOS</a>
+      <a href="Topics_LinesMove/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_MouseEvents/index.html"        class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_Arrow/index.html"              class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_Ellipse/index.html"            class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_Joystick/index.html"           class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_EulerJoystick/index.html"      class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_LissajousCurve/index.html"     class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_CollisionDetection/index.html" class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_PointsDetection/index.html"    class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Topics_BezierCurves/index.html"      class="list-group-item list-group-item-action list-group-item-success"></a>
     </div>
 
     <div class="list-group mx-4 my-4">
-      <a                                      class="list-group-item list-group-item-action list-group-item-secondary">Simulations P5.js DEMOS</a>
-      <a href="9_Particles/index.html"        class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="10_Ship2D/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="11_Gravity2D1/index.html"      class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="12_Gravity2D2/index.html"      class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="13_GravityDiagram/index.html"  class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="14_Springs/index.html"         class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a                                          class="list-group-item list-group-item-action list-group-item-secondary">Simulations P5.js DEMOS</a>
+      <a href="Simulations_Particles/index.html"           class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Simulations_Ship2D/index.html"              class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Simulations_GravityDiagram/index.html"      class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Simulations_Gravity2D1/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Simulations_Gravity2D2/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Simulations_Springs/index.html"             class="list-group-item list-group-item-action list-group-item-success"></a>
     </div>
    
   </body>
@@ -54,9 +56,11 @@
     var n    = 1;
     list.forEach((a)=>{
 
-        if(a.href != ''){
-
-           a.innerHTML = a.href.split('/').slice(-2,-1)
+        if(a.href != ''){  
+           var LinkText = `${n++}. ${a.href.split('/').slice(-2,-1)}`;
+               LinkText = LinkText.replace('Topics_','');
+               LinkText = LinkText.replace('Simulations_','');
+           a.innerHTML = LinkText;
         }
 
     })
