@@ -90,7 +90,7 @@ let myUtils = {
        line(p1[0],p1[1],p2[0],p2[1]);
       pop()
       
-      // P2
+      // TRIANGLE
       push()
        fill(color);stroke(color);
        translate(p2[0],p2[1])

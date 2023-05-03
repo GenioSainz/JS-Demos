@@ -9,7 +9,7 @@ class Particle{
   constructor(position, velocity, gravity,{mass=1,radius=20,vfriction=0.99,kd=0.1,k=0.1,c=0.1,
                                                 color=[127,127,127],
                                                 drawPath=false,pathPoints=50,pathColor=[255,0,0],
-                                                drawParticle = true,
+                                                drawParticle=true,
                                                 drawArrow=true,arrowLen=50,arrowColor=[255,0,0]}={}){
 
       this.x       = position.x;                   // position x
