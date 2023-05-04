@@ -8,12 +8,14 @@ var R = 100;
 var r = 5;
 
 var s0 = function( p ) {
-          
-          img = p.loadImage('../imgs/space.jpg');
+
           p.setup = function(){
 
                     p.createCanvas(p.windowWidth,p.windowHeight).position(0,0);
-                    p.image(img,0,0)
+                    p.loadImage('../imgs/space.jpg', img => {
+                                                        p.image(img, 0, 0);
+                                                      }
+                              );
           };
 
           // p.draw = function() {
@@ -53,13 +55,15 @@ var s2  = function( p ) {
           p.setup = function() {
             
                   p.createCanvas(p.windowWidth,p.windowHeight).position(0,0);
-                  p.textSize(18)
+                  p.textSize(16);
                   
                   for(let i=0;i<nParticles;i++){
                         particleArray.push( new Particle( {x:0,y:p.windowHeight/2} ,{v_m:p.random(2,4),v_d:p.random(-5,5)}, p, {radius:r,color:[0,0,0]} ) );
                   };
                   
                   initialPixels  = p.ratioCollision().colPixels;
+
+                  console.log(canvas1.drawingContext.getImageData(xmin,ymin,2*R,2*R).data)
                   
                   setInterval(()=>{
 
@@ -75,8 +79,10 @@ var s2  = function( p ) {
                   p.circle(p.windowWidth/2,p.windowHeight/2,2*R)
 
                   p.fill(255);
-                  p.text(`Collision Area: ${(100*ratioCollisions).toFixed(2)} %`,p.windowWidth/2,20);
-                  p.text(`No. Collisions: ${nCollisions}`                        ,p.windowWidth/2,40);
+                  p.text(`Collision Area: ${(100*ratioCollisions).toFixed(2)} %`,20,30);
+                  p.text(`No. Collisions: ${nCollisions}`                       ,20,50);
+
+                 p.noFill();p.rect(xmin,ymin,2*R,2*R)
 
                   for(let i=0;i<nParticles;i++){
                         
@@ -111,7 +117,7 @@ var s2  = function( p ) {
           };
 
           p.ratioCollision = function(){
-          
+                  
                   var Area      = canvas1.drawingContext.getImageData(xmin,ymin,2*R,2*R).data;
                   var allPixels = 0;
                   var colPixels = 0;

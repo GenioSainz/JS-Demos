@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <style>
+      
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        display: block;
+      };
+
+
+    </style>
+
+</head>
+<body>
+   
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js" ></script> -->
+    <!-- https://geniosainz.github.io/JS-Demos/1_LinesMove/index.html -->
+    <script src="p5.min.js"></script>
+    <script src="myUtils.js"></script>
+
+    
+    
+    <script>
+
+        var nBars = 200;
+        var barWidth;
+        var barHeights = [];
+        
+        function setup() {
+            createCanvas(windowWidth,windowHeight);
+            initBarsHeight();
+            barWidth = windowWidth/nBars;
+            
+        };
+        
+        function draw(){
+
+            background(200)
+            
+            for(let i=0;i<nBars;i++){
+                
+                rect(barWidth*i,windowHeight,barWidth,barHeights[i]);
+            };
+
+            for(let i=0;i<nBars;i++){
+                
+                var index = Math.floor( randomN(0,nBars,3) );
+                barHeights[index] += -1;
+
+                if( barHeights[index]<-windowHeight ){
+
+                    initBarsHeight();
+
+                }
+                
+            };
+        };
+
+        function initBarsHeight(){
+
+            for(let i=0;i<nBars;i++){
+
+                barHeights.push(0);
+            };
+        };
+
+        function randomAB(a,b){
+
+            return  (b-a)*Math.random() + a 
+        }
+
+        function randomN(a,b,iterations){
+            
+            var sum = 0;
+            for(let i=0;i<iterations;i++){
+
+                sum += randomAB(a,b);
+            };
+
+            return sum/iterations
+        }
+        
+    </script>
+
+</body>
+
+
+</html>
