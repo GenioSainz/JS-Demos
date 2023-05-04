@@ -39,15 +39,14 @@
       <a href="Topics_Ellipse/index.html"            class="list-group-item list-group-item-action list-group-item-primary"></a>
       <a href="Topics_CollisionDetection/index.html" class="list-group-item list-group-item-action list-group-item-primary"></a>
       <a href="Topics_PointsDetection/index.html"    class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_BitmapCollision/index.html"    class="list-group-item list-group-item-action list-group-item-primary"></a>
       <a href="Topics_LissajousCurves/index.html"    class="list-group-item list-group-item-action list-group-item-primary b"></a>
       <a href="Topics_BezierCurves/index.html"       class="list-group-item list-group-item-action list-group-item-primary b"></a>
-      <a href="Topics_BitmapCollision/index.html"    class="list-group-item list-group-item-action list-group-item-primary"></a>
     </div>
-
+    
     <div class="list-group mx-4 my-4">
       <a                                          class="list-group-item list-group-item-action list-group-item-secondary b">Simulations DEMOS</a>
       <a href="Simulations_Particles/index.html"           class="list-group-item list-group-item-action list-group-item-success"></a>
+      <a href="Simulations_BitmapCollision/index.html"     class="list-group-item list-group-item-action list-group-item-success b"></a>
       <a href="Simulations_Ship2D/index.html"              class="list-group-item list-group-item-action list-group-item-success"></a>
       <a href="Simulations_GravityDiagram/index.html"      class="list-group-item list-group-item-action list-group-item-success b"></a>
       <a href="Simulations_Gravity2D1/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
@@ -59,19 +58,17 @@
 
   <script>
 
-    var list =  document.querySelectorAll('a');
-    var n    = 1;
-    list.forEach((a)=>{
+      var list =  document.querySelectorAll('a');
+      var n    = 1;
+      list.forEach((a)=>{
 
-        if(a.href != ''){  
-           var LinkText = `${n++}. ${a.href.split('/').slice(-2,-1)}`;
-               LinkText = LinkText.replace('Topics_','');
-               LinkText = LinkText.replace('Simulations_','');
-           a.innerHTML = LinkText;
-        }
-
-    })
-
+          if(a.href != ''){  
+            var LinkText = `${n++}. ${a.href.split('/').slice(-2,-1)}`;
+                LinkText = LinkText.replace('Topics_','');
+                LinkText = LinkText.replace('Simulations_','');
+            a.innerHTML = LinkText;
+          }
+      })
 
   </script>
 

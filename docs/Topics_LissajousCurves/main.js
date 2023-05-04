@@ -9,12 +9,12 @@ var x,y;
 
 var xRadiusStep = 50;
 var xRadiusMin  = 50;
-var xRadiusMax  = 400;
+var xRadiusMax  = 300;
 var xRadius     = 150;
 
 var yRadiusStep = 50;
 var yRadiusMin  = 50;
-var yRadiusMax  = 400;
+var yRadiusMax  = 300;
 var yRadius     = 150;
 
 var xSpeedStep = 1;
