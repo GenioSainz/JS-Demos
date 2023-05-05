@@ -13,8 +13,8 @@ function setup() {
 function draw() {
   
     background(240);myUtils.drawGrid();
-    pointsArray.draw();
     pointsArray.mouseDetection();
+    pointsArray.draw();
 };
 
 function doubleClicked(event) {

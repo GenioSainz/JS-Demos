@@ -3,43 +3,34 @@
 // var canvas1 = new p(s1); // bitmap detection
 // var canvas2 = new p(s2); // moving particles
 
-var nParticles = 100;
-var R = 100;
-var r = 5;
+var nParticles = 200;
+var density    = 1;
+var R          = 125;
+var r          = 3;
+var velMin     = 2;
+var velMax     = 5;
 
 var s0 = function( p ) {
 
           p.setup = function(){
-
+                    p.pixelDensity(density)
                     p.createCanvas(p.windowWidth,p.windowHeight).position(0,0);
                     p.loadImage('../imgs/space.jpg', img => {
-                                                        p.image(img, 0, 0);
-                                                      }
-                              );
-          };
-
-          // p.draw = function() {
-          // };
-
-          p.windowResized = function(){
-            window.location.reload()
-          }
-
+                                                             p.image(img, 0, 0);});
+                    console.log('density', p.displayDensity());
+                   };
+          // p.draw = function() {};
 };
 
 var s1 = function( p ) {
           
           p.setup = function(){
-
+                p.pixelDensity(density)
                 p.createCanvas(p.windowWidth,p.windowHeight).position(0,0);
                 p.fill(0);p.noStroke();
                 p.circle(p.windowWidth/2,p.windowHeight/2,2*R);
-                //p.rectMode(p.CENTER)
-                //p.rect(p.windowWidth/2,p.windowHeight/2,2*R,2*R)
           };
-
-          // p.draw = function() {
-          // };
+          // p.draw = function() {};
 };
 
 var s2  = function( p ) {
@@ -52,37 +43,44 @@ var s2  = function( p ) {
           var xmin = p.windowWidth/2-R;
           var ymin = p.windowHeight/2-R;
 
+          var angle = Math.atan(R/(p.windowWidth/2))*180/Math.PI
+          var yRmax = p.windowHeight/2 + Math.tan( angle*Math.PI/180 )*p.windowWidth/2;
+          var yRmin = p.windowHeight/2 + Math.tan(-angle*Math.PI/180 )*p.windowWidth/2;
+
+          var particleOptions = {radius:r,color:[0,0,0],velAngle:angle,velMax:velMax,velMin:velMin}
+
           p.setup = function() {
-            
+                  p.pixelDensity(density)
                   p.createCanvas(p.windowWidth,p.windowHeight).position(0,0);
                   p.textSize(16);
                   
                   for(let i=0;i<nParticles;i++){
-                        particleArray.push( new Particle( {x:0,y:p.windowHeight/2} ,{v_m:p.random(2,4),v_d:p.random(-5,5)}, p, {radius:r,color:[0,0,0]} ) );
+                        particleArray.push( new Particle( {x:0,y:p.windowHeight/2} ,{v_m:p.random(velMin,velMax),v_d:p.random(-angle,angle)}, p, particleOptions ) );
                   };
                   
                   initialPixels  = p.ratioCollision().colPixels;
-
-                  console.log(canvas1.drawingContext.getImageData(xmin,ymin,2*R,2*R).data)
                   
                   setInterval(()=>{
 
                         ratioCollisions =  p.ratioCollision().colPixels / initialPixels;
 
                   },1000)
+
+                  console.log(p.displayDensity())
           };
 
           p.draw = function() {
             
                   p.clear();
-                  p.noFill();p.stroke(0)
+                  p.noFill();p.stroke(0);p.strokeWeight(0.5)
                   p.circle(p.windowWidth/2,p.windowHeight/2,2*R)
+                  p.line(0,p.windowHeight/2,p.windowWidth/2,yRmax)
+                  p.line(0,p.windowHeight/2,p.windowWidth/2,yRmin)
 
                   p.fill(255);
                   p.text(`Collision Area: ${(100*ratioCollisions).toFixed(2)} %`,20,30);
                   p.text(`No. Collisions: ${nCollisions}`                       ,20,50);
 
-                 p.noFill();p.rect(xmin,ymin,2*R,2*R)
 
                   for(let i=0;i<nParticles;i++){
                         
@@ -133,6 +131,10 @@ var s2  = function( p ) {
 
                   return {allPixels,colPixels}
           };
+
+          p.windowResized = function(){
+            window.location.reload()
+          }
 
 };
 

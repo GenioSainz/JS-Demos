@@ -32,9 +32,11 @@ class pointsDetection{
         var pointX     = random( this.dxyLimits, windowWidth  - this.dxyLimits );
         var pointY     = random( this.dxyLimits, windowHeight - this.dxyLimits );
 
-        var point      = new p5.Vector( pointX, pointY);
-            point.r    = random(10,20);
-            point.drag = false;
+        var point         = new p5.Vector( pointX, pointY);
+            point.r       = random(30,40);
+            point.drag    = false;
+            point.offsetX = 0;
+            point.offsetY = 0;
 
         this.pointsArray.push( point )
 
@@ -52,9 +54,10 @@ class pointsDetection{
 
                   if(boolDistance){
 
-                      point.drag    = true;
                       this.dragMode = true;
-
+                      point.drag    = true;
+                      point.offsetX = mouseX-point.x;
+                      point.offsetY = mouseY-point.y;
                       break
                   };
             };
@@ -69,17 +72,23 @@ class pointsDetection{
           var point = this.pointsArray[i];
     
           if(point.drag){
-    
-            fill(255,0,0);circle(mouseX,mouseY,2*point.r);
-            fill(0,0,0)  ;text(`p${i}`,mouseX + 2*point.r, mouseY);
+
+            point.x = mouseX-point.offsetX;
+            point.y = mouseY-point.offsetY;
             
-            point.x = mouseX;
-            point.y = mouseY;
+            push()
+             drawingContext.shadowOffsetX = 10;
+             drawingContext.shadowOffsetY = 10;
+             drawingContext.shadowBlur    = 10;
+             drawingContext.shadowColor   = 'gray';
+             fill(255,0,0);circle(        point.x              , point.y  ,2*point.r);
+             fill(0,0,0)  ; text(`p${i}`, point.x + 1.5*point.r, point.y);
+            pop()
     
           }else{
     
             fill(255,0,0);circle(point.x,point.y,2*point.r);
-            fill(0,0,0)  ;text(`p${i}`,point.x+2*point.r,point.y);
+            fill(0,0,0)  ;text(`p${i}`,point.x+1.5*point.r,point.y);
     
           };
       };
@@ -94,7 +103,7 @@ class pointsDetection{
           point.drag = false;
       };
   
-          this.dragMode = false;
+      this.dragMode = false;
   };
 
   addPoint(pointX, pointY){

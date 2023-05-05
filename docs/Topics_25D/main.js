@@ -32,7 +32,7 @@ function setup() {
     var object = {
                   x:random(-windowWidth/2,windowWidth/2),
                   y:random(-windowHeight/2,windowHeight/2),
-                  r:2,
+                  r:5,
                   };
 
     Stars.push( object );
