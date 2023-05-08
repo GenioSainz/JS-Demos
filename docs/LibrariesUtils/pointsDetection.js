@@ -14,11 +14,14 @@ class pointsDetection{
     
     this.pointsArray = array;
     this.nPoints     = array.length;
+
     for(let i=0;i<this.nPoints;i++){
 
       var point = this.pointsArray[i];
-          point.r    = this.radius;
-          point.drag = false;
+          point.r       = this.radius;
+          point.drag    = false;
+          point.offsetX = 0;
+          point.offsetY = 0;
 
 
     };
@@ -79,8 +82,8 @@ class pointsDetection{
             push()
              drawingContext.shadowOffsetX = 10;
              drawingContext.shadowOffsetY = 10;
-             drawingContext.shadowBlur    = 10;
-             drawingContext.shadowColor   = 'gray';
+             drawingContext.shadowBlur    = 8;
+             drawingContext.shadowColor   = 'black';
              fill(255,0,0);circle(        point.x              , point.y  ,2*point.r);
              fill(0,0,0)  ; text(`p${i}`, point.x + 1.5*point.r, point.y);
             pop()

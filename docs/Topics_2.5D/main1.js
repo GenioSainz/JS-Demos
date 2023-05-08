@@ -1,6 +1,6 @@
 
 
-var focal    = 300;
+var focalLength    = 300;
 var nObjects = 100;
 var nStars   = 200;
 var Objects  = [];
@@ -30,9 +30,9 @@ function setup() {
   for(let i=0;i<nStars;i++){
 
     var object = {
-                  x:random(-windowWidth/2,windowWidth/2),
-                  y:random(-windowHeight/2,windowHeight/2),
-                  r:5,
+                  x:random(windowWidth),
+                  y:random(windowHeight),
+                  r:3,
                   };
 
     Stars.push( object );
@@ -46,30 +46,37 @@ function draw() {
 
   // line(0,windowHeight/2,windowWidth,windowHeight/2);
   // line(windowWidth/2,0,windowWidth/2,windowHeight);
-
+    
+    // draw stars 
     for(let i=0;i<nStars;i++){
         push()
-          translate(windowWidth/2,windowHeight/2)
+          fill(255,255,0)
           circle(Stars[i].x,Stars[i].y,Stars[i].r);
         pop()
     };
+    
+    // draw 2.5D Objects
+    // sort the objects by z.far the most distant objects are drawn first to avoid overlaps.
 
+    Objects.sort(zSort)
     for(let i=0;i<nObjects;i++){
       
         var object = Objects[i];
+        var scalef = focalLength/(object.z+focalLength);
+
         push()
-
+  
           translate(windowWidth/2,windowHeight/2);
-          var scalef = focal/(object.z+focal);
+          translate(scalef*object.x,scalef*object.y)
           scale(scalef,scalef);
-          rect(scalef*object.x,scalef*object.y,object.wh,object.wh);
-          circle(scalef*object.x,scalef*object.y,2*object.r);
+          rect(0,0,object.wh,object.wh);
+          circle(0,0,2*object.r);
           
-          object.z+=1
+          object.z-=1
 
-          if(object.z>600){
+          if(object.z<-focalLength/2){
 
-            object.z = -300
+            object.z = 3*focalLength
           };
 
         pop()
@@ -77,6 +84,12 @@ function draw() {
    
 };
 
+
+function zSort(objA,ObjB){
+
+  return ObjB.z-objA.z
+
+}
 
 function windowResized() {
 
