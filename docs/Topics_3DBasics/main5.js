@@ -15,14 +15,22 @@ function setup() {
 
   // OBJECTS
   ///////////
-	Objects[0] = { x: -500, y: -500, z: 1000 };
-	Objects[1] = { x:  500, y: -500, z: 1000 };
-	Objects[2] = { x:  500, y: -500, z: 500  };
-	Objects[3] = { x: -500, y: -500, z: 500  };
-	Objects[4] = { x: -500, y:  500, z: 1000 };
-	Objects[5] = { x:  500, y:  500, z: 1000 };
-	Objects[6] = { x:  500, y:  500, z: 500  };
-	Objects[7] = { x: -500, y:  500, z: 500  };
+  for(let i=0;i<nObjects;i++){
+
+
+    var ymax = 4000;
+
+    var object = {
+                  y:  ymax/2 - i*ymax/nObjects + Math.random() * 100,
+                  angle: i*0.2,
+                  spiralR: 1000,
+                  x : function() { return 0       + this.spiralR*Math.cos( this.angle) },
+                  z : function() { return centerZ + this.spiralR*Math.sin( this.angle) },
+                  r:  50,
+                  };
+
+    Objects.push( object );
+  };
 
   // STARS
   ///////////
@@ -68,21 +76,23 @@ function draw() {
       for(let i=0;i<nObjects;i++){
         
           var object = Objects[i];
-          project();
+          var scalef = focalLength/(object.z+focalLength);
 
           push() 
-
+            
             fill(255)
             translate(windowWidth/2,windowHeight/2);
             scale(scalef,scalef);
             translate(object.x,object.y);
             circle(0,0,50);
              
+            object.angle +=  map(mouseX,0,windowWidth,-rotationSpeed,rotationSpeed);
+            object.x      =  0       + object.spiralR*Math.cos(object.angle);
+            object.z      =  centerZ + object.spiralR*Math.sin(object.angle);
+            var {x_0,y_0} = referentSystem();
 
-            var {x_0,y_0} = newReferentSystem();
-            
           pop()
-   
+            
           vertex(x_0, y_0)
           
       };
@@ -91,20 +101,7 @@ function draw() {
    
 };
 
-
-function project(){
-
-  for(let i=0;i<nObjects;i++){
-
-    var object = Objects[i];
-    var scalef = focalLength/(object.z+focalLength);
-        object.sx  = object.px * scalef;
-        object.sy  = object.py * scalef;
-  };
-
-};
-
-function newReferentSystem(){
+function referentSystem(){
 
   let matrix = drawingContext.getTransform();
 
@@ -115,31 +112,13 @@ function newReferentSystem(){
   let y_0 = matrix['f'];
 
   return {x_0,y_0}
-};
-
-function drawLine(array){
-
-  beginShape();
-
-  for(let i=0;i<array.length;i++){
-
-     var index = array[i];
-     var point = Objects[index];
-     vertex(point.sx,point.sy);
-
-  };
-
-  endShape();
-
-
 }
-
 
 function zSort(objA,ObjB){
 
   return ObjB.z-objA.z
 
-};
+}
 
 function windowResized() {
 
