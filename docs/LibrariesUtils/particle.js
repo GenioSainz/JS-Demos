@@ -6,7 +6,7 @@ class Particle{
   // new p5.Vector([x], [y], [z]);
   // new p5.Vector.fromAngle(angle, [length]);
 
-  constructor(position, velocity, gravity,{mass=1,radius=20,vfriction=0.99,kd=0.1,k=0.1,c=0.1,
+  constructor(position, velocity, gravity,{mass=1,radius=20,vfriction=1,kd=0.1,k=0.1,c=0.1,
                                                 color=[127,127,127],
                                                 drawPath=false,pathPoints=50,pathColor=[255,0,0],
                                                 drawParticle=true,
@@ -149,6 +149,12 @@ class Particle{
               line(position1[0],position1[1],position2[0],position2[1]);
             pop()
           };
+
+          if(len>this.pathPoints){
+             
+            this.path.shift();
+
+          };
       };
       
       // draw particle
@@ -252,7 +258,6 @@ class Particle{
            };
       };
     };
-
 
 
     // get/set pos

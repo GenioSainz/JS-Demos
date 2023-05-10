@@ -2,7 +2,7 @@
 var rotationSpeed = 0.025;
 var focalLength   = 300;
 var pointsArray   = [];
-var zCenter       = 1500;
+var zCenter       = 800;
 var xc = 0;
 var yc = 0;
 var zc = 0;
@@ -16,19 +16,24 @@ function setup() {
 
   // OBJECTS
   ///////////
-  var xp      = 500;
-  var yp      = 500;
-  var zNear   = -500;
-  var zFar    = 500;
+  var xp    = 500;
+  var yp    = 500;
+  var zNear = -500;
+  var zFar  = 500;
+  var ax    = 300;
 
-	pointsArray[0] = { x: -xp, y: -yp, z: zFar };
-	pointsArray[1] = { x:  xp, y: -yp, z: zFar };
-	pointsArray[2] = { x:  xp, y: -yp, z: zNear  };
-	pointsArray[3] = { x: -xp, y: -yp, z: zNear  };
-	pointsArray[4] = { x: -xp, y:  yp, z: zFar };
-	pointsArray[5] = { x:  xp, y:  yp, z: zFar };
-	pointsArray[6] = { x:  xp, y:  yp, z: zNear  };
-	pointsArray[7] = { x: -xp, y:  yp, z: zNear  };
+	pointsArray[0]  = { x: -xp, y: -yp, z: zFar   };
+	pointsArray[1]  = { x:  xp, y: -yp, z: zFar   };
+	pointsArray[2]  = { x:  xp, y: -yp, z: zNear  };
+	pointsArray[3]  = { x: -xp, y: -yp, z: zNear  };
+	pointsArray[4]  = { x: -xp, y:  yp, z: zFar   };
+	pointsArray[5]  = { x:  xp, y:  yp, z: zFar   };
+	pointsArray[6]  = { x:  xp, y:  yp, z: zNear  };
+	pointsArray[7]  = { x: -xp, y:  yp, z: zNear  };
+	pointsArray[8]  = { x:  0,  y:   0, z: 0      };
+	pointsArray[9]  = { x: ax,  y:   0, z: 0      };
+	pointsArray[10] = { x: 0,   y:  ax, z: 0      };
+	pointsArray[11] = { x: 0,   y:   0, z: ax     };
 
   key_mouse_Events()
 
@@ -49,6 +54,10 @@ function draw() {
     drawLines(pointsArray,[1,5])
     drawLines(pointsArray,[2,6])
     drawLines(pointsArray,[3,7])
+
+    drawLines(pointsArray,[8,9])
+    drawLines(pointsArray,[8,10])
+    drawLines(pointsArray,[8,11])
     
     push()
     fill(255);textSize(30);textAlign(CENTER,CENTER);
@@ -71,7 +80,28 @@ function drawPoins(array){
           scale(scalef,scalef);
           translate(point.x,point.y);
           circle(0,0,10);
-          text(`P${index}`,0,0)
+           
+          fill(255,0,0);stroke(255,0,0)
+          if(index==9){
+
+            text(`X`,0,0);
+
+          }else if(index==10){
+
+            text(`Y`,0,0);
+
+          }else if(index==11){
+
+            text(`Z`,0,0);
+
+          }else if(index==8){
+
+            //nothing
+            
+          }else{
+            fill(255);stroke(255)
+            text(`P${index}`,0,0)
+          }
           
         pop()
       
@@ -80,8 +110,7 @@ function drawPoins(array){
 
 function drawLines(points,indexs){
 
-    //noFill();
-    fill('rgba(255,0,0,0.2)')
+    noFill();
     beginShape()
 
         indexs.forEach( (indx) =>{
