@@ -24,22 +24,6 @@ class pointsDetection{
 
   }
 
-  createRandom(){
-
-      for(let i=0;i<this.nPoints;i++){
-        
-        var pointX     = random( this.dxyLimits, windowWidth  - this.dxyLimits );
-        var pointY     = random( this.dxyLimits, windowHeight - this.dxyLimits );
-
-        var point      = new p5.Vector( pointX, pointY);
-            point.r    = random(10,20);
-            point.drag = false;
-
-        this.pointsArray.push( point )
-
-      };    
-  };
-
   mouseDetection(){
 
       if( mouseIsPressed && !this.dragMode){
@@ -69,9 +53,6 @@ class pointsDetection{
     
           if(point.drag){
     
-                // fill(255,0,0);circle(mouseX,mouseY,2*point.r);
-                //fill(0);text(`p${i}`,mouseX + 3*point.r, mouseY);
-            
                 if(RoundCoordinates){
 
                   var {xGrid,yGrid} = myUtils.roundGrid(gridCellSize,mouseX,mouseY);
@@ -86,8 +67,7 @@ class pointsDetection{
                 }
     
           }else{
-    
-            //fill(255,0,0);circle(point.x,point.y,2*point.r);
+
             fill(0);text(`p${i}`,point.x+3*point.r,point.y);
     
           };

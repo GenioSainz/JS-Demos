@@ -11,7 +11,7 @@ var p1,p2,te1;
 
 var dxk; 
 var dyk; 
-var tek; 
+var tek  =0
 var p1x; 
 var p1y; 
 var p2x; 
@@ -117,6 +117,8 @@ function mouseMoved(){
   p2y = p1y + sin(tek)*50;
 
 }
+
+
 
 
 function windowResized() {

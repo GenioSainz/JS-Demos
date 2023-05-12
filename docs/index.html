@@ -9,6 +9,10 @@
         margin: 0;
         padding: 0;
         width: 100%;
+        background-image: url('./imgs/lunada.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
       }
 
       div{
@@ -19,17 +23,7 @@
       .bold{
         font-weight: bold;
       };
-
-      .btn{
-
-        padding: 8px 16px; 
-        text-align: left; 
-        font-weight: bold;
-        border-radius: 0px;
-        background-color: #d1e7dd !important;
-        color:#0a3622;
-        border-color:#a3cfbb;
-      };
+ 
 
     </style>
 
@@ -37,66 +31,128 @@
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 
 </head>
+
   <body>
     
+    <!-- TOPICS -->
     <div class="list-group mx-4 my-4">
-      <a                                        class="list-group-item list-group-item-action list-group-item-secondary bold">Topics DEMOS</a>
-      <a href="Topics_NormalDistribution/index.html" class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_LinesMove/index.html"          class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_MouseEvents/index.html"        class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_Arrow/index.html"              class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_Joystick/index.html"           class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_EulerJoystick/index.html"      class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_Ellipse/index.html"            class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_CollisionDetection/index.html" class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_PointsDetection/index.html"    class="list-group-item list-group-item-action list-group-item-primary"></a>
-      <a href="Topics_LissajousCurves/index.html"    class="list-group-item list-group-item-action list-group-item-primary bold"></a>
-      <a href="Topics_BezierCurves/index.html"       class="list-group-item list-group-item-action list-group-item-primary bold"></a>
-      <a href="Topics_3DBasics/index.html"               class="list-group-item list-group-item-action list-group-item-primary bold"></a>
+
+        
+        <a                                        class="list-group-item list-group-item-action list-group-item-secondary bold">Topics DEMOS</a>
+        
+        <!-- --- -->
+        <a href="Topics_NormalDistribution/index.html" class="list-group-item list-group-item-action list-group-item-primary"></a>
+
+        <!-- --- -->
+        <a href="Topics_Arrows/index.html"              class="list-group-item list-group-item-action list-group-item-primary"></a>
+
+        <!-- --- -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-success dropdown-toggle topics" data-bs-toggle="dropdown" aria-expanded="false" >
+          Events
+          </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="Topics_Events/index1.html">: Lines Move</a></li>
+              <li><a class="dropdown-item" href="Topics_Events/index2.html">: Collision Detection</a></li>
+              <li><a class="dropdown-item" href="Topics_Events/index3.html">: Mouse Events</a></li>
+            </ul>
+        </div>
+
+        <!-- --- -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-success dropdown-toggle topics" data-bs-toggle="dropdown" aria-expanded="false" >
+            Joystick
+          </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="Topics_Joystick/index1.html">: Joystick UI</a></li>
+              <li><a class="dropdown-item" href="Topics_Joystick/index2.html">: Joystick Euler</a></li>
+            </ul>
+        </div>
+
+         <!-- --- -->
+        <a href="Topics_Ellipse/index.html"               class="list-group-item list-group-item-action list-group-item-primary"></a>
+
+        <!-- --- -->
+        <a href="Topics_PointsDetectionOffset/index.html" class="list-group-item list-group-item-action list-group-item-primary"></a>
+
+        <!-- --- -->
+        <a href="Topics_LissajousCurves/index.html"       class="list-group-item list-group-item-action list-group-item-primary"></a>
+
+        <!-- --- -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-success dropdown-toggle topics" data-bs-toggle="dropdown" aria-expanded="false" >
+            Bezier Curves
+          </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="Topics_BezierCurves/index1.html">: Casteljau's Animation</a></li>
+              <li><a class="dropdown-item" href="Topics_BezierCurves/index2.html">: Rational Curves</a></li>
+            </ul>
+        </div>
+        
+        <!-- --- -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-success dropdown-toggle topics" data-bs-toggle="dropdown" aria-expanded="false" >
+            3D Basics
+          </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="Topics_3DBasics/index1.html">: 2.5D Linear </a></li>
+              <li><a class="dropdown-item" href="Topics_3DBasics/index2.html">: 2.5D Rotation </a></li>
+              <li><a class="dropdown-item" href="Topics_3DBasics/index3.html">: Spiral I</a></li>
+              <li><a class="dropdown-item" href="Topics_3DBasics/index4.html">: Spiral II </a></li>
+              <li><a class="dropdown-item" href="Topics_3DBasics/index5.html">: Spiral III  </a></li>
+              <li><a class="dropdown-item" href="Topics_3DBasics/index6.html">: Cube Rotation </a></li>
+            </ul>
+        </div>
+
     </div>
     
+    <!-- SIMULATIONS -->
     <div class="list-group mx-4 my-4">
-      <a                                          class="list-group-item list-group-item-action list-group-item-secondary bold">Simulations DEMOS</a>
-      <a href="Simulations_Particles/index.html"           class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="Simulations_BitmapCollision/index.html"     class="list-group-item list-group-item-action list-group-item-success bold"></a>
-      <a href="Simulations_Ship2D/index.html"              class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="Simulations_GravityDiagram/index.html"      class="list-group-item list-group-item-action list-group-item-success bold"></a>
-      <a href="Simulations_Gravity2D1/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="Simulations_Gravity2D2/index.html"          class="list-group-item list-group-item-action list-group-item-success bold"></a>
-      <a href="Simulations_Springs/index.html"             class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="Simulations_Tweening/index.html"            class="list-group-item list-group-item-action list-group-item-success"></a>
+
+        <a                                          class="list-group-item list-group-item-action list-group-item-secondary bold">Simulations DEMOS</a>
+
+        <!-- --- -->
+        <a href="Simulations_Particles/index.html"           class="list-group-item list-group-item-action list-group-item-success"></a>
+
+        <!-- --- -->
+        <a href="Simulations_BitmapCollision/index.html"     class="list-group-item list-group-item-action list-group-item-success"></a>
+
+        <!-- --- -->
+        <a href="Simulations_Ship2D/index.html"              class="list-group-item list-group-item-action list-group-item-success"></a>
+
+
+        <!-- --- -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-success dropdown-toggle simulations" data-bs-toggle="dropdown" aria-expanded="false" >
+            Gravity
+          </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="Simulations_Gravity/index0.html"> Diagram </a></li>
+              <li><a class="dropdown-item" href="Simulations_Gravity/index1.html"> Sun Planets I   </a></li>
+              <li><a class="dropdown-item" href="Simulations_Gravity/index2.html"> Sun Planets II  </a></li>
+            </ul>
+        </div>
+
+        <!-- --- -->
+        <a href="Simulations_Springs/index.html"             class="list-group-item list-group-item-action list-group-item-success"></a>
+        
+        <!-- --- -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-success dropdown-toggle simulations" data-bs-toggle="dropdown" aria-expanded="false" >
+            Tweening
+          </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="Simulations_Tweening/index0.html"> Particles </a></li>
+              <li><a class="dropdown-item" href="Simulations_Tweening/index1.html"> Images    </a></li>
+              <li><a class="dropdown-item" href="Simulations_Tweening/index2.html"> Chain     </a></li>
+            </ul>
+        </div>
+
     </div>
-
-    <!-- <div class="list-group mx-4 my-4">
-      <a                                          class="list-group-item list-group-item-action list-group-item-secondary bold">Simulations DEMOS</a>
-      <a href="Simulations_Particles/index.html"           class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="Simulations_BitmapCollision/index.html"     class="list-group-item list-group-item-action list-group-item-success bold"></a>
-      <a href="Simulations_Ship2D/index.html"              class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="Simulations_GravityDiagram/index.html"      class="list-group-item list-group-item-action list-group-item-success bold"></a>
-      <a href="Simulations_Gravity2D1/index.html"          class="list-group-item list-group-item-action list-group-item-success"></a>
-      <a href="Simulations_Gravity2D2/index.html"          class="list-group-item list-group-item-action list-group-item-success bold"></a>
-
-     
-      <div class="btn-group">
-        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" >
-          Simulation
-        </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#">Action</a></li>
-          <li><a class="dropdown-item" href="#">Another action</a></li>
-          <li><a class="dropdown-item" href="#">Something else here</a></li>
-        </ul>
-      </div>
-
-      <a href="Simulations_Springs/index.html"             class="list-group-item list-group-item-action list-group-item-success"></a>
-
-    </div> -->
 
   </body>
 
-
-
-
+  <!-- NUMERING -->
   <script>
 
       var list =  document.querySelectorAll('a');
@@ -104,14 +160,56 @@
       
       list.forEach((a)=>{
 
-          if(a.href != ''){  
+          if(a.href != '' && !a.parentElement.className==''){  
             var LinkText = `${n++}. ${a.href.split('/').slice(-2,-1)}`;
                 LinkText = LinkText.replace('Topics_','');
                 LinkText = LinkText.replace('Simulations_','');
-            a.innerHTML = LinkText;
+                a.innerHTML = LinkText;
+
+          }else if(a.href != '' && a.parentElement.className==''){
+
+            var LinkText = `${n++}. ${a.href.split('/').slice(-2,-1)}`;
+                LinkText = LinkText.replace('Topics_','');
+                LinkText = LinkText.replace('Simulations_','');
+                a.innerHTML = LinkText + a.innerHTML;
           }
-      })
+      });
 
   </script>
+  
+  <!-- DROPDOWN-ITEM STYLE-->
+  <script >
+
+
+    var elementsArray    = document.querySelectorAll('.simulations');
+        elementsArray.forEach((element)=>{
+          
+             element.style.backgroundColor = '#d1e7dd';
+             element.style.borderRadius    = '0px';
+             element.style.textAlign       = 'left';
+             element.style.padding         = '8px 16px';
+             element.style.color           = '#0a3622';
+             element.style.border          = 'solid 1px #a3cfbb'
+             element.style.borderTopWidth  = '0px';
+             element.style.borderBottomWidth = '1px'
+             });
+
+    var elementsArray    = document.querySelectorAll('.topics');
+        elementsArray.forEach((element)=>{
+          
+             element.style.backgroundColor   = '#cfe2ff';
+             element.style.borderRadius      = '0px';
+             element.style.textAlign         = 'left';
+             element.style.padding           = '8px 16px';
+             element.style.color             = '#0a3622';
+             element.style.border            = 'solid 1px #9ec5fe';
+             element.style.borderTopWidth    = '0px';
+             element.style.borderBottomWidth = '1px';
+            });
+
+
+  </script>
+
+
 
 </html>

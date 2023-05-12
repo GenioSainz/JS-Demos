@@ -90,12 +90,13 @@ function draw() {
 
   var angleNoise  =  map( noise(noiseCoordAngle  +=0.05 ), 0, 1,-2,2)*PI/180;
 
-  target.vel.rotate(angleNoise)
-
+  target.vel.rotate(angleNoise);
 
   target.update();
   target.draw();
   target.checkEdgesBounceCentroid();
+
+
 
 }
 

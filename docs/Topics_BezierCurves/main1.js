@@ -24,7 +24,7 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     angleMode(DEGREES);
 
-    gui = createGui('Bezier').setPosition(gridCellSize/2,gridCellSize/2);
+    gui = createGui('Bezier Curve').setPosition(gridCellSize/2,gridCellSize/2);
     gui.addGlobals('t','CasteljauAnimation','roundCoordinates');
 
     var {xGrid,yGrid} = myUtils.roundGrid(gridCellSize,windowWidth/2,windowHeight/2);
@@ -168,10 +168,6 @@ function calcDistances(x,y){
 
               distancesIndex.push(  distances.indexOf(d) );
          }); 
-
-        //  console.log(distances);
-        //  console.log(distancesSort);
-        //  console.log(distancesIndex);
 
          return min( distancesIndex[0], distancesIndex[1] );
 

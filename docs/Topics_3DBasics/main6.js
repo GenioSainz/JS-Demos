@@ -1,11 +1,12 @@
 
-var rotationSpeed = 0.025
+var rotationSpeed = 0.025;
 var focalLength   = 300;
-var centerZ       = 2000;
 var pointsArray   = [];
+var zCenter       = 800;
 var xc = 0;
 var yc = 0;
 var zc = 0;
+
 
 function setup() {
   
@@ -17,17 +18,22 @@ function setup() {
   ///////////
   var xp    = 500;
   var yp    = 500;
-  var zNear = 100;
-  var zFar  = 2*zNear;
+  var zNear = -500;
+  var zFar  = 500;
+  var ax    = 300;
 
-	pointsArray[0] = { x: -xp, y: -yp, z: zFar };
-	pointsArray[1] = { x:  xp, y: -yp, z: zFar };
-	pointsArray[2] = { x:  xp, y: -yp, z: zNear  };
-	pointsArray[3] = { x: -xp, y: -yp, z: zNear  };
-	pointsArray[4] = { x: -xp, y:  yp, z: zFar };
-	pointsArray[5] = { x:  xp, y:  yp, z: zFar };
-	pointsArray[6] = { x:  xp, y:  yp, z: zNear  };
-	pointsArray[7] = { x: -xp, y:  yp, z: zNear  };
+	pointsArray[0]  = { x: -xp, y: -yp, z: zFar   };
+	pointsArray[1]  = { x:  xp, y: -yp, z: zFar   };
+	pointsArray[2]  = { x:  xp, y: -yp, z: zNear  };
+	pointsArray[3]  = { x: -xp, y: -yp, z: zNear  };
+	pointsArray[4]  = { x: -xp, y:  yp, z: zFar   };
+	pointsArray[5]  = { x:  xp, y:  yp, z: zFar   };
+	pointsArray[6]  = { x:  xp, y:  yp, z: zNear  };
+	pointsArray[7]  = { x: -xp, y:  yp, z: zNear  };
+	pointsArray[8]  = { x:  0,  y:   0, z: 0      };
+	pointsArray[9]  = { x: ax,  y:   0, z: 0      };
+	pointsArray[10] = { x: 0,   y:  ax, z: 0      };
+	pointsArray[11] = { x: 0,   y:   0, z: ax     };
 
   key_mouse_Events()
 
@@ -48,10 +54,14 @@ function draw() {
     drawLines(pointsArray,[1,5])
     drawLines(pointsArray,[2,6])
     drawLines(pointsArray,[3,7])
+
+    drawLines(pointsArray,[8,9])
+    drawLines(pointsArray,[8,10])
+    drawLines(pointsArray,[8,11])
     
     push()
     fill(255);textSize(30);textAlign(CENTER,CENTER);
-    text(`[ ${xc}, ${yc}, ${zc} ]`,windowWidth/2,30)
+    text(`[ X, Y, Z ] = [ ${xc}, ${yc}, ${zc} ]`,windowWidth/2,30)
     pop();
    
 };
@@ -61,7 +71,7 @@ function drawPoins(array){
 
     array.forEach( (point,index) =>{
 
-        var scalef = focalLength/(point.z+focalLength);
+        var scalef = focalLength/(point.z+focalLength+zCenter);
 
         push() 
 
@@ -70,7 +80,28 @@ function drawPoins(array){
           scale(scalef,scalef);
           translate(point.x,point.y);
           circle(0,0,10);
-          text(`P${index}`,0,0)
+           
+          fill(255,0,0);stroke(255,0,0)
+          if(index==9){
+
+            text(`X`,0,0);
+
+          }else if(index==10){
+
+            text(`Y`,0,0);
+
+          }else if(index==11){
+
+            text(`Z`,0,0);
+
+          }else if(index==8){
+
+            //nothing
+            
+          }else{
+            fill(255);stroke(255)
+            text(`P${index}`,0,0)
+          }
           
         pop()
       
@@ -79,14 +110,13 @@ function drawPoins(array){
 
 function drawLines(points,indexs){
 
-    //noFill();
-    fill('rgba(255,0,0,0.2)')
+    noFill();
     beginShape()
 
         indexs.forEach( (indx) =>{
 
-            var point  = points[indx]
-            var scalef = focalLength/(point.z+focalLength);
+            var point  = points[indx];
+            var scalef = focalLength/(point.z+focalLength+zCenter);
 
             push() 
 
@@ -105,30 +135,6 @@ function drawLines(points,indexs){
 
 };
 
-function translatePoints(x,y,z){
-
-      pointsArray.forEach( (point) =>{
-
-          point.x += x;
-          point.y += y;
-          point.z += z;
-
-      });
-
-}
-
-
-function project(){
-
-  for(let i=0;i<nObjects;i++){
-
-    var object = Objects[i];
-    var scalef = focalLength/(object.z+focalLength);
-        object.sx  = object.px * scalef;
-        object.sy  = object.py * scalef;
-  };
-
-};
 
 function referentSystem(){
 
@@ -144,49 +150,105 @@ function referentSystem(){
 
 };
 
-function drawLine(array){
-  
-  fill(255)
-  beginShape();
-  fill(255)
+function translatePoints(x,y,z){
 
-  for(let i=0;i<array.length;i++){
+  pointsArray.forEach( (point) =>{
 
-     var index = array[i];
-     var point = Objects[index];
-     vertex(point.sx,point.sy);
+      point.x += x;
+      point.y += y;
+      point.z += z;
 
-  };
+  });
 
-  endShape(CLOSE);
+};
 
-}
+function rotate_X(theta){
+
+  var cos = Math.cos(theta);
+  var sin = Math.sin(theta);
+
+  pointsArray.forEach( (point) =>{
+
+    point.y = point.y*cos - point.z*sin; 
+    point.z = point.y*sin + point.z*cos;
+  });
+
+};
+
+function rotate_Y(theta){
+
+  var cos = Math.cos(theta);
+  var sin = Math.sin(theta);
+
+  pointsArray.forEach( (point) =>{
+
+    point.x = point.x*cos - point.z*sin; 
+    point.z = point.x*sin + point.z*cos;
+  });
+
+};
+
+function rotate_Z(theta){
+
+  var cos = Math.cos(theta);
+  var sin = Math.sin(theta);
+
+  pointsArray.forEach( (point) =>{
+
+    point.x = point.x*cos - point.y*sin; 
+    point.y = point.x*sin + point.y*cos;
+  });
+
+};
 
 function key_mouse_Events(){
 
     var deltaXYZ = 50;
+    var angle    = Math.PI/180;
 
     document.addEventListener("keydown", (event) => {
 
         if(event.code=="ArrowUp"){
+           
+            if(event.ctrlKey){
+              rotate_X(-angle);
+            }else{
+              translatePoints(0,-deltaXYZ,0);
+              yc+=-deltaXYZ;
+            };
+        };
 
-          translatePoints(0,-deltaXYZ,0);
-          yc+=-deltaXYZ;
+        if(event.code=="ArrowDown"){
 
-        }else if(event.code=="ArrowDown"){
-          
-          translatePoints(0,deltaXYZ,0)
-          yc+=deltaXYZ
+          if(event.ctrlKey){
+            rotate_X(angle)
+          }else{
+            translatePoints(0,deltaXYZ,0);
+            yc+=deltaXYZ;
+          };
 
-        }else if(event.code=="ArrowRight"){
+        };
 
-          translatePoints(deltaXYZ,0,0);
-          xc+=deltaXYZ
+        if(event.code=="ArrowRight"){
 
-        }else if(event.code=="ArrowLeft"){
+          if(event.ctrlKey){
+            rotate_Y(angle)
+          }else{
+            translatePoints(deltaXYZ,0,0);
+            xc+=deltaXYZ
+          };
 
-          translatePoints(-deltaXYZ,0,0);
-          xc+=-deltaXYZ
+        };
+
+        if(event.code=="ArrowLeft"){
+
+          if(event.ctrlKey){
+            rotate_Y(-angle)
+          }else{
+            translatePoints(-deltaXYZ,0,0);
+            xc+=-deltaXYZ
+          };
+
         };
 
         if(event.code=="Numpad8"){

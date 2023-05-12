@@ -246,6 +246,31 @@ class Particle{
 
     };
 
+    outEdges(offset=0){
+
+      if( this.pos.y-this.radius>windowHeight + offset){
+
+        return true
+
+      }else if( this.pos.y+this.radius< -offset ){
+
+        return true
+        
+      }else if(this.pos.x-this.radius>windowWidth + offset ){
+
+        return true
+
+      }else if(this.pos.x+this.radius<-offset){
+
+        return true  
+
+      }else{
+
+        return false
+      };
+
+    };
+
     checkEdgesWrapOffset(offset){
 
       if( this.pos.y-this.radius>windowHeight + offset){

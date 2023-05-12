@@ -1,7 +1,7 @@
 
 
 var fr              = 30;
-var particleOptions = {kd:0.0001,
+var particleOptions = {kd:0.0001,vfriction:0.99,
                        k:0.01,c:0.25,
                        radius:15,arrowLen:40,
                        drawPath:false,drawArrow:false,pathColor:[255,0,0],pathPoints:100}

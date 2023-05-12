@@ -1,6 +1,6 @@
 
 
-var t     = 0.75;
+var t     = 1 ;
 var tMin  = 0;
 var tMax  = 1;
 var tStep = 0.01
@@ -42,10 +42,10 @@ let colorArray   = [];
 var pc0,pc1,pc2,pc3,pc4;
 
 
-var CasteljauAnimation = true;
-var roundCoordinates   = false
-var gridCellSize       = 50;
-var rPoint             = 8;
+CasteljauAnimation   = false
+var roundCoordinates = false
+var gridCellSize     = 50;
+var rPoint           = 8;
 var gui;
 
 
@@ -55,8 +55,8 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     angleMode(DEGREES);
 
-    gui = createGui('Bezier').setPosition(gridCellSize/2,gridCellSize/2);
-    gui.addGlobals('t','CasteljauAnimation','roundCoordinates','w0','w1','w2','w3','w4');
+    gui = createGui('Rational Bezier Curve').setPosition(gridCellSize/2,gridCellSize/2);
+    gui.addGlobals('t','roundCoordinates','w0','w1','w2','w3','w4');
 
     var {xGrid,yGrid} = myUtils.roundGrid(gridCellSize,windowWidth/2,windowHeight/2);
 
@@ -92,7 +92,6 @@ function draw() {
   if(t==0 || t==1){
       
     drawBezierOnly0Level();
-    
   };
 
 };
@@ -250,7 +249,7 @@ function plotBezierCurve(){
 
 function listenSliders(){
 
-    for(let i=4;i<=8;i++){
+    for(let i=3;i<=7;i++){
       document.querySelector(`#qs_${i}`).addEventListener('input',()=>{
 
           calcArrayWeights()
@@ -269,7 +268,7 @@ function listenSliders(){
 function calcArrayWeights(){
          
          arrayWeights = [];
-         for(let i=4;i<=8;i++){
+         for(let i=3;i<=7;i++){
 
             arrayWeights.push( document.querySelector(`#qs_${i}`).value*1);
          };
@@ -282,14 +281,14 @@ function mouseDragged(){
    calcBezierCurve();
 };
 
-function doubleClicked(event) {
+// function doubleClicked(event) {
     
-    if(keyIsPressed){
-        var index = calcDistances(event.x,event.y);
-        controlPoints.addPointIndex(event.x,event.y,index+1);
-        calcBezierCurve();
-    };
-};
+//     if(keyIsPressed){
+//         var index = calcDistances(event.x,event.y);
+//         controlPoints.addPointIndex(event.x,event.y,index+1);
+//         calcBezierCurve();
+//     };
+// };
 
 function mouseReleased(){
          
