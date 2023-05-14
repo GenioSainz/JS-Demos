@@ -1,4 +1,76 @@
+// function tweenX(obj, targetX, duration, easingFunc) {
 
+//   var startX    = obj.x;
+//   var changeX   = targetX - startX;
+//   var startTime = new Date();
+
+//   update();
+
+//   function update() {
+
+//       var time = new Date() - startTime;
+
+//       if(time < duration) {
+//           obj.x = easingFunc(time, startX, changeX, duration);
+//       }
+//       else {
+//           time = duration;
+//           obj.x = easingFunc(time, startX, changeX, duration);
+//       }
+//       render();
+//   };
+// };
+
+
+class tweenFull{
+
+  constructor(obj, variables, duration, easingFunc, onProgress, onComplete){
+
+      this.obj        = JSON.parse(JSON.stringify(obj));
+      this.variables  = variables; 
+      this.duration   = duration; 
+      this.easingFunc = easingFunc; 
+      this.onProgress = onProgress; 
+      this.onComplete = onComplete;
+
+      this.starts    = {};
+      this.changes   = {};
+      this.startTime = new Date();
+
+      for(var variable in this.variables) {
+        this.starts[variable]  = this.obj[variable];
+        this.changes[variable] = this.variables[variable];// - this.starts[variable];  // changes or final value
+      };
+
+  };
+
+
+  update(){
+
+    var time = new Date() - this.startTime;
+
+    if(time < this.duration) {
+      
+      for(var variable in this.variables) {
+        this.obj[variable] = this.easingFunc(time, this.starts[variable], this.changes[variable], this.duration);
+      }
+
+      this.onProgress(this.obj);
+
+    }
+    else {
+
+      time = this.duration;
+      for(var variable in this.variables) {
+        this.obj[variable] = this.easingFunc(time, this.starts[variable], this.changes[variable], this.duration);
+      }
+
+       this.onComplete(this.obj);
+    };
+
+  };
+  
+};
 
 // t: current time, b: beginning value, _c: final value, d: total duration
 var tweenFunctions = {
