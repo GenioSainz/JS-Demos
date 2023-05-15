@@ -59,13 +59,14 @@ class tweenFull{
 
     }
     else {
-
+      
+      this.startTime = new Date()
       time = this.duration;
       for(var variable in this.variables) {
         this.obj[variable] = this.easingFunc(time, this.starts[variable], this.changes[variable], this.duration);
       }
 
-       this.onComplete(this.obj);
+       //this.onComplete(this.obj);
     };
 
   };

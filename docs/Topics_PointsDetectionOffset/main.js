@@ -6,7 +6,7 @@ function setup() {
 
     createCanvas(windowWidth, windowHeight);textAlign(CENTER,CENTER);textSize(12)
   
-    pointsArray = new pointsDetection({nPoints:50});
+    pointsArray = new pointsDetection({nPoints:25,radius:30});
     pointsArray.createRandom();
 };
 

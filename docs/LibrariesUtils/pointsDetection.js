@@ -17,7 +17,7 @@ class pointsDetection{
 
     for(let i=0;i<this.nPoints;i++){
 
-      var point = this.pointsArray[i];
+      var point         = this.pointsArray[i];
           point.r       = this.radius;
           point.drag    = false;
           point.offsetX = 0;
@@ -36,7 +36,7 @@ class pointsDetection{
         var pointY     = random( this.dxyLimits, windowHeight - this.dxyLimits );
 
         var point         = new p5.Vector( pointX, pointY);
-            point.r       = random(30,40);
+            point.r       = this.radius;
             point.drag    = false;
             point.offsetX = 0;
             point.offsetY = 0;

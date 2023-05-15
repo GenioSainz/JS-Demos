@@ -1,67 +1,116 @@
 
-var point;
-var target;
-var tStart;
-var time;
-var tmax = 3000;
+var tweenTime = 10000;
+
+var target,point;
 var x,y,alpha,radius
+var cellSize = 35;
+var kx       = 4;
+
+var tweenArray = [];
+var nTweens    = 5;
+
+var img; 
 
 function setup() {
 
-  createCanvas(windowWidth, windowHeight);
-  angleMode(DEGREES);
+    createCanvas(windowWidth, windowHeight);
+    angleMode(DEGREES);textStyle(BOLD);
 
-    point = {
-            x: random(windowWidth),
-            y: random(windowHeight),
-            r: 10
-            };
+    img  = loadImage('../imgs/easing0.PNG' , img  => { image(img,  0, 0) });
 
-    target = {
-              x: windowWidth/2,
-              y: windowHeight/2,
-              r: 50
-              };
-    tStart = new Date();
+    var tweenLength = Object.keys(tweenFunctions).length;
+    var heights     = myUtils.linspace(cellSize,windowHeight-cellSize,tweenLength);
+    var radius      = ( (windowHeight-3*cellSize)/tweenLength )/2
+    var i           = 0;
+    for (const property in tweenFunctions) {
+
+      target = {
+        x: windowWidth-kx*cellSize,
+        y: heights[i],
+        radius: radius,
+        alpha: 0
+      };
+
+      point = {
+        x: kx*cellSize,
+        y: heights[i],
+        radius: radius,
+        alpha:1,
+        easingFunc:property,
+        height:heights[i]
+      };
+
+      var easingFunc = tweenFunctions[property];
+
+      // constructor(obj, variables, duration, easingFunc, onProgress, onComplete)
+      tweenArray.push( new tweenFull(point, {x:target.x, y:target.y, alpha: target.alpha}, tweenTime, easingFunc, updateTweens, updateTweens ) )
+    
+      i++;
+
+    };  
+
+  
+
 };
+            
 
 function draw() {
   
-    background(240);strokeWeight(2);myUtils.drawGrid();
+    background(240);strokeWeight(2);
+
+    push()
+      translate(windowWidth/2 ,windowHeight/2);
+      var w = img.width ;
+      var h = img.height;
+      image(img,-w/2,-h/2);
+    pop()
     
-    var time = new Date()-tStart;
-
-    fill(255,0,0)
-    circle(target.x,target.y,2*target.r)
-    
-    if(time<tmax){
-      x      = smoothTween(time,point.x,target.x,tmax);
-      y      = smoothTween(time,point.y,target.y,tmax);
-      alpha  = smoothTween(time,1,0.1,tmax);
-      radius = smoothTween(time,point.r,target.r,tmax);
-      fill(`rgba(0,255,0,${alpha})`);
-      circle(x,y,2*radius);
-
-    }else{
-
-      fill(`rgba(0,255,0,${alpha})`)
-      circle(target.x,target.y,2*radius);
-  };
+    var i = 0;
+    for (const property in tweenFunctions) {
+      tweenArray[i].update();
+      i++
+    }
 
 };
 
+function updateTweens(tween){
+  
+    var {x,y,radius,alpha,easingFunc,height} = tween;
+    var r = Math.round(255*alpha);
+    var g = Math.round( map(alpha,1,0,0,255) )
 
-function smoothTween(time,x0,x1,duration){
+    push();
+      strokeWeight(0.5);line(kx*cellSize,height,windowWidth-kx*cellSize,height)
+      noFill();stroke(255,0,0);circle(kx*cellSize,height,2*target.radius);            // initial Pos
+      noFill();stroke(0,255,0);circle(windowWidth-kx*cellSize,height,2*target.radius);// end Pos
+    pop()
+    
+    // tween position t
+    fill(`rgb(${r},${g},0)`);circle(x,y,2*radius);
+    
+    //text
+    fill(0);text(easingFunc,5,height)
 
-  var normt = time/duration;
-  var normx =  6*normt**5-15*normt**4+10*normt**3
-  return x0 + (x1-x0)*normx
+
 };
+
+function restart(tween){
+     
+  //updateTweens(tween)
+  //window.location.reload()
+
+  //console.log('init')
+
+  //tween.startTime = new Date();
+
+};
+
 
 
 
 function windowResized() {
   // resize canvas
-  resizeCanvas(windowWidth, windowHeight)
+  resizeCanvas(windowWidth, windowHeight);
+  window.location.reload()
 
 }

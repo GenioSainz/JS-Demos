@@ -64,16 +64,17 @@ function draw() {
 
   noFill();stroke(255,0,0)
   
+  // DRAWING LINES AND CIRCLES
+  //////////////////////////////
+
   beginShape();
     for(let i=0;i<nElemnts;i++){
         
         var element_i = elementsArray[i];
-        var dx     = leader.x - element_i.x;
-        var dy     = leader.y - element_i.y;
-        var di     = Math.sqrt(dx**2+dy**2);
-
-    
-      var diBetween = dEasing*(element_i.r + leader.r);
+        var dx        = leader.x - element_i.x;
+        var dy        = leader.y - element_i.y;
+        var di        = Math.sqrt(dx**2+dy**2);
+        var diBetween = dEasing*(element_i.r + leader.r);
 
         if(di>diBetween ){
           element_i.x += dx*kEasing;
