@@ -49,6 +49,8 @@ let cornerBR = {}; // bottomRight
 let cornerTL = {}; // topLeft
 let cornerTR = {}; // topRight
 
+var plotX; var idx = 'plotX';
+var plotY; var idy = 'plotY';
 
 function setup() {
 
@@ -62,10 +64,21 @@ function setup() {
     textSize(16);
     textAlign(CENTER,CENTER);
 
-    gui = createGui('Rotation Axis');
-    gui.addGlobals('rX','rY','rZ','tZ');
+    // gui = createGui('Rotation Axis');
+    // gui.addGlobals('rX','rY','rZ','tZ');
     
-    generatePermutation()
+    generatePermutation();
+
+   
+    plotX = createDiv('').id(idx);
+    plotX.position(25, 25);
+    plotY = createDiv('').id(idy);
+    plotY.position(225, 25);
+    // plotX.style('height','200px');
+    // plotX.style('width' ,'200px');
+    
+   
+
     
 };
 
@@ -90,7 +103,10 @@ function draw(){
     //////////////////////////
     var xGrid = x/cellSize;
     var yGrid = y/cellSize;
-
+    
+    //fadeInterpolation(xGrid)
+    smoothInterp(idx,xGrid)
+    smoothInterp(idy,yGrid)
 
     drawGrid();
     drawReferentSystem();
@@ -152,7 +168,7 @@ function draw(){
             strokeWeight(2);stroke(255,0,0);line(X1,Y1,X2,Y2);
             line(X1,Y1,0,X1,Y1,num/cellSize);
             translate(X1,Y1,num/cellSize)
-            text('a',dxy,dxy);
+            fill(255,0,0);text('a',dxy,dxy);
         pop();
         
         // BottomRight Projection
@@ -172,7 +188,7 @@ function draw(){
             strokeWeight(2);stroke(0,255,0);line(X1,Y1,X2,Y2);
             line(X1,Y1,0,X1,Y1,num/cellSize);
             translate(X1,Y1,num/cellSize)
-            text('b',dxy,dxy);
+            fill(0,255,0);text('b',dxy,dxy);
         pop();
 
         // TopLeft Projection
@@ -191,7 +207,7 @@ function draw(){
             strokeWeight(2);stroke(0,0,255);line(X1,Y1,X2,Y2);
             line(X1,Y1,0,X1,Y1,num/cellSize);
             translate(X1,Y1,num/cellSize)
-            text('c',dxy,dxy);
+            fill(0,0,255);text('c',dxy,dxy);
         pop();
 
         // TopRight Projection
@@ -210,7 +226,7 @@ function draw(){
             strokeWeight(2);stroke(255,0,255);line(X1,Y1,X2,Y2);
             line(X1,Y1,0,X1,Y1,num/cellSize);
             translate(X1,Y1,num/cellSize)
-            text('d',dxy,dxy);
+            fill(255,0,255);text('d',dxy,dxy);
         pop();
 
 
@@ -361,4 +377,68 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 };
 
+function smoothInterp(id,gridValue){
+     
+    var tn = gridValue-floor(gridValue)
 
+    var t = myUtils.linspace(0,1,25);
+    var s = t.map(t => 6*t**5-15*t**4+10*t**3);
+    
+    var S = 6*tn**5-15*tn**4+10*tn**3
+    var traceInterpolation = {
+        x: [0,tn,tn],
+        y: [S,S,0],
+        mode: 'lines+markers',
+        line:  {color: 'rgb(0,0,0)',width: 0.5},
+        marker:{color: 'rgb(127,127,127)',size: 4},
+    };
+
+
+    
+
+    var traceFunction = {
+        x: t,
+        y: s,
+        mode: 'lines+markers',
+        marker:{color: 'rgb(255,0,0)',size: 4},
+        line:  {color: 'rgb(0,0,255)',width: 2},
+    };
+
+
+    var data = [traceInterpolation,traceFunction];
+
+    var layout = {
+        title: 'Interpolate Xp jjsjsjs',
+        //xaxis: {title:'t', titlefont: {family: 'Arial, sans-serif',size: 16}},
+        showlegend: false,
+        width:  200,
+        height: 200,
+        margin: {
+            l: 30,
+            r: 30,
+            b: 30,
+            t: 30,
+            pad: 4
+          },
+
+          xaxis: {
+            range: [0,1.1],
+            tickvals:[0,1],
+            ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
+             },
+          yaxis: {
+                range: [0,1.1],
+                tickvals:[0,1],
+                ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
+             },
+        
+      }
+    var config = {   
+                    responsive: true,
+                    displayModeBar: false}
+      
+      Plotly.newPlot(id, data,layout,config)
+
+
+
+}
