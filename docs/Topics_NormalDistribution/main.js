@@ -13,8 +13,7 @@ function setup() {
 
 function draw(){
 
-    background(255)
-    
+    background(255);
     line(windowWidth/2,0,windowWidth/2,windowHeight);
     for(let i=0;i<nBars;i++){
         var alpha = map(barHeights[i],0,-windowHeight,0,1)

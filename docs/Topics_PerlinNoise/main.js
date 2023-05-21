@@ -1,5 +1,5 @@
 
-var dxy         = 10;
+var dxy         = 15;
 var P           = [];
 
 var cellSize   = 200;
@@ -71,13 +71,13 @@ function setup() {
 
    
     plotX = createDiv('').id(idx);
-    plotX.position(25, 25);
     plotY = createDiv('').id(idy);
+    plotX.position(25, 25);
     plotY.position(225, 25);
-    // plotX.style('height','200px');
-    // plotX.style('width' ,'200px');
-    
-   
+    plotX.style('border','2px solid');
+    plotY.style('border','2px solid');
+
+
 
     
 };
@@ -105,8 +105,8 @@ function draw(){
     var yGrid = y/cellSize;
     
     //fadeInterpolation(xGrid)
-    smoothInterp(idx,xGrid)
-    smoothInterp(idy,yGrid)
+    smoothInterp(idx,xGrid,'X')
+    smoothInterp(idy,yGrid,'Y')
 
     drawGrid();
     drawReferentSystem();
@@ -152,85 +152,15 @@ function draw(){
         var temGradTL = getGradient( indexTL );
         var temGradTR = getGradient( indexTR );
 
-        // BottomLeft Projection
-        ///////////////////////////////////////////////////
-        var X1           = cornerBL.x*cellSize;
-        var Y1           = cornerBL.y*cellSize;   
-        var a            = vectorBL.copy().mult(cellSize);
-        var b            = temGradBL.copy().mult(cellSize);
-        var num          = a.dot(b);
-        var dem          = b.dot(b);
-        var proyection   = b.mult(num/dem);
-        var X2           = X1 + proyection.x
-        var Y2           = Y1 + proyection.y
-        push()
-            strokeWeight(0.5);stroke(0);line(x,y,X2,Y2);
-            strokeWeight(2);stroke(255,0,0);line(X1,Y1,X2,Y2);
-            line(X1,Y1,0,X1,Y1,num/cellSize);
-            translate(X1,Y1,num/cellSize)
-            fill(255,0,0);text('a',dxy,dxy);
-        pop();
+        // Draw Projections
+        /////////////////////////////////////////////////////
+        drawProjections(x,y,cornerBL,0,0,vectorBL,temGradBL,'a',[255,0,0])
+        drawProjections(x,y,cornerBL,1,0,vectorBR,temGradBR,'b',[0,255,0])
+        drawProjections(x,y,cornerBL,0,1,vectorTL,temGradTL,'c',[0,0,255])
+        drawProjections(x,y,cornerBL,1,1,vectorTR,temGradTR,'d',[255,0,255])
         
-        // BottomRight Projection
-        ///////////////////////////////////////////////////
-        var X1           = cornerBL.x*cellSize + cellSize;
-        var Y1           = cornerBL.y*cellSize;
-        var a            = vectorBR.copy().mult(cellSize);
-        var b            = temGradBR.copy().mult(cellSize);
-        var num          = a.dot(b);
-        var dem          = b.dot(b);
-        var proyection   = b.mult(num/dem);
-        var X2           = X1 + proyection.x
-        var Y2           = Y1 + proyection.y
 
-        push()
-            strokeWeight(0.5);stroke(0);
-            strokeWeight(2);stroke(0,255,0);line(X1,Y1,X2,Y2);
-            line(X1,Y1,0,X1,Y1,num/cellSize);
-            translate(X1,Y1,num/cellSize)
-            fill(0,255,0);text('b',dxy,dxy);
-        pop();
-
-        // TopLeft Projection
-        ///////////////////////////////////////////////////
-        var X1           = cornerBL.x*cellSize;
-        var Y1           = cornerBL.y*cellSize + cellSize;
-        var a            = vectorTL.copy().mult(cellSize);
-        var b            = temGradTL.copy().mult(cellSize);
-        var num          = a.dot(b);
-        var dem          = b.dot(b);
-        var proyection   = b.mult(num/dem);
-        var X2           = X1 + proyection.x
-        var Y2           = Y1 + proyection.y
-        push()
-            strokeWeight(0.5);stroke(0);line(x,y,X2,Y2);
-            strokeWeight(2);stroke(0,0,255);line(X1,Y1,X2,Y2);
-            line(X1,Y1,0,X1,Y1,num/cellSize);
-            translate(X1,Y1,num/cellSize)
-            fill(0,0,255);text('c',dxy,dxy);
-        pop();
-
-        // TopRight Projection
-        ///////////////////////////////////////////////////
-        var X1           = cornerBL.x*cellSize + cellSize;
-        var Y1           = cornerBL.y*cellSize + cellSize;
-        var a            = vectorTR.copy().mult(cellSize);
-        var b            = temGradTR.copy().mult(cellSize);
-        var num          = a.dot(b);
-        var dem          = b.dot(b);
-        var proyection   = b.mult(num/dem);
-        var X2           = X1 + proyection.x
-        var Y2           = Y1 + proyection.y
-        push()
-            strokeWeight(0.5);stroke(0);line(x,y,X2,Y2);
-            strokeWeight(2);stroke(255,0,255);line(X1,Y1,X2,Y2);
-            line(X1,Y1,0,X1,Y1,num/cellSize);
-            translate(X1,Y1,num/cellSize)
-            fill(255,0,255);text('d',dxy,dxy);
-        pop();
-
-
-        // Inputs vectors
+        // Draw Inputs vectors
         ///////////////////
         push()
             strokeWeight(2)
@@ -260,8 +190,8 @@ function drawGrid(){
     for(let i=-nx;i<=nx;i++){
 
         fill(0)
-        text(`${i}`,i*cellSize+dxy,dxy);
-        text(`${i}`,dxy,i*cellSize+dxy);
+        text(`${i}`,i*cellSize,nx*cellSize+dxy);
+        text(`${i}`,-nx*cellSize-dxy,i*cellSize);
     };
 };
 
@@ -306,6 +236,27 @@ function shuffleArray(arrayToShuffle) {
 	}
 };
 
+function drawProjections(x,y,corner,dx,dy,cornerVec,gradientVec,txt,color){
+
+    var X1           = corner.x*cellSize + dx*cellSize;
+    var Y1           = corner.y*cellSize + dy*cellSize;   
+    var a            = cornerVec.copy().mult(cellSize);
+    var b            = gradientVec.copy().mult(cellSize);
+    var num          = a.dot(b);
+    var dem          = b.dot(b);
+    var proyection   = b.mult(num/dem);
+    var X2           = X1 + proyection.x
+    var Y2           = Y1 + proyection.y
+
+    push()
+        strokeWeight(0.5);stroke(0); line(x,y,X2,Y2);
+        strokeWeight(1);stroke(color);line(X1,Y1,X2,Y2);
+        line(X1,Y1,0,X1,Y1,num/cellSize);
+        translate(X1,Y1,num/cellSize)
+        fill(color);text(txt,dxy,dxy);
+    pop();
+};
+
 function drawGradient(){
 	strokeWeight(1)
     for(let X=-nx;X<nx;X++){
@@ -325,7 +276,7 @@ function drawGradient(){
                 var Gr = getGradient( indexTL );
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
-                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.05}); 
+                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.04}); 
 
 
                 var X1 = X*cellSize + cellSize;
@@ -333,21 +284,21 @@ function drawGradient(){
                 var Gr = getGradient( indexTR );
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
-                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.05}); 
+                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.04}); 
 
                 var X1 = X*cellSize;
                 var Y1 = Y*cellSize;
                 var Gr = getGradient( indexBL );
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
-                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.05}); 
+                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.04}); 
 
                 var X1 = X*cellSize+cellSize;
                 var Y1 = Y*cellSize;
                 var Gr = getGradient( indexBR );
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
-                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.05}); 
+                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.04}); 
         };
     };
 
@@ -377,62 +328,89 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 };
 
-function smoothInterp(id,gridValue){
-     
-    var tn = gridValue-floor(gridValue)
+function smoothInterp(id,gridValue,txt){
+    
 
+    var minValue = floor(gridValue);
+
+    // normalize values => scalar
+    var tn = gridValue-floor(gridValue)
+    var sn = 6*tn**5-15*tn**4+10*tn**3
+
+    // normalize values =>array
     var t = myUtils.linspace(0,1,25);
     var s = t.map(t => 6*t**5-15*t**4+10*t**3);
-    
-    var S = 6*tn**5-15*tn**4+10*tn**3
+
     var traceInterpolation = {
         x: [0,tn,tn],
-        y: [S,S,0],
+        y: [sn,sn,0],
         mode: 'lines+markers',
         line:  {color: 'rgb(0,0,0)',width: 0.5},
-        marker:{color: 'rgb(127,127,127)',size: 4},
+        marker:{color: 'rgb(127,127,127)',size: 8},
     };
-
-
-    
 
     var traceFunction = {
         x: t,
         y: s,
-        mode: 'lines+markers',
-        marker:{color: 'rgb(255,0,0)',size: 4},
-        line:  {color: 'rgb(0,0,255)',width: 2},
+        mode: 'lines',
+        line:  {color: 'rgb(255,0,0)',width: 2}
     };
 
 
     var data = [traceInterpolation,traceFunction];
 
+
+    var anotation = [  
+                        // OUTPUT
+                        {
+                        x: 0.15,
+                        y: sn +0.15,
+                        xref: 'x',
+                        yref: 'y',
+                        text: `${(sn+minValue).toFixed(3)}`,
+                        showarrow: false,
+                        },
+
+                        // INPUT
+                        {
+                        x: tn +0.15,
+                        y: 0.15,
+                        xref: 'x',
+                        yref: 'y',
+                        text: `${(tn+minValue).toFixed(3)}`,
+                        showarrow: false,
+                        }
+                    ];
+
+
     var layout = {
-        title: 'Interpolate Xp jjsjsjs',
-        //xaxis: {title:'t', titlefont: {family: 'Arial, sans-serif',size: 16}},
+        title: {text:`<b>Interpolate ${txt} Grid`,font:{size:14}},
         showlegend: false,
         width:  200,
         height: 200,
         margin: {
-            l: 30,
-            r: 30,
-            b: 30,
-            t: 30,
+            l: 25,
+            r: 25,
+            b: 25,
+            t: 25,
             pad: 4
           },
 
           xaxis: {
-            range: [0,1.1],
-            tickvals:[0,1],
-            ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
+                    range: [0,1.1],
+                    tickvals:[0,1],
+                    ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
              },
           yaxis: {
-                range: [0,1.1],
-                tickvals:[0,1],
-                ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
+                    range: [0,1.1],
+                    tickvals:[0,1],
+                    ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
              },
+
+         annotations:anotation
         
       }
+
     var config = {   
                     responsive: true,
                     displayModeBar: false}
