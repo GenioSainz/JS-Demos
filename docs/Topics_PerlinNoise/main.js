@@ -4,8 +4,8 @@ var P           = [];
 
 var cellSize   = 200;
 var axisLength = cellSize/2;
-var nx = 2;
-var ny = 2;
+var nx         = 2;
+var ny         = 2;
 var myFont;
 var gui;
 
@@ -40,8 +40,8 @@ let vectorTL = new p5.Vector(0,0); // topLeft
 let vectorTR = new p5.Vector(0,0); // topRight
 
 let gradientBL = new p5.Vector(+1,+1); // bottomLeft
-let gradientBR = new p5.Vector(+1,-1); // bottomRight
-let gradientTL = new p5.Vector(-1,+1); // topLeft
+let gradientBR = new p5.Vector(-1,+1); // bottomRight
+let gradientTL = new p5.Vector(+1,-1); // topLeft
 let gradientTR = new p5.Vector(-1,-1); // topRight
 
 let cornerBL = {}; // bottomLeft
@@ -49,42 +49,88 @@ let cornerBR = {}; // bottomRight
 let cornerTL = {}; // topLeft
 let cornerTR = {}; // topRight
 
-var plotX; var idx = 'plotX';
-var plotY; var idy = 'plotY';
+let valueA = 0;
+let valueB = 0;
+let valueC = 0;
+let valueD = 0;
+
+let U = 0;
+let V = 0;
+let AB = 0;
+let CD = 0;
+let Z  = 0;
+
+
+var plotX;  var idx = 'plotX';
+var plotY;  var idy = 'plotY';
+
+var plotVals; var idVals = 'plotVals'
+
+var plotAB; var idAB = 'plotAB';
+var plotCD; var idCD = 'plotCD';
+var plotZ;  var idZ  = 'plotZ';
+
+var txtX = ['X','U'];
+var txtY = ['Y','V'];
+
+var divSize = 180;
+var divPad  = 10;
 
 function setup() {
 
     createCanvas(windowWidth,windowHeight, WEBGL);
     angleMode(DEGREES);strokeWeight(5);
 
-    frameRate(5);
+    frameRate(10);
 
     myFont = loadFont('font.otf');
     textFont(myFont);
     textSize(16);
     textAlign(CENTER,CENTER);
 
-    // gui = createGui('Rotation Axis');
-    // gui.addGlobals('rX','rY','rZ','tZ');
+    gui = createGui('Rotation Axis').setPosition(windowWidth-150-divPad,divPad);
+    gui.addGlobals('rX','rY','rZ','tZ');
     
     generatePermutation();
 
    
-    plotX = createDiv('').id(idx);
-    plotY = createDiv('').id(idy);
-    plotX.position(25, 25);
-    plotY.position(225, 25);
+    plotX     = createDiv('').id(idx);
+    plotY     = createDiv('').id(idy);
+    plotVals  = createDiv('').id(idVals);
+    plotAB    = createDiv('').id(idAB);
+    plotCD    = createDiv('').id(idCD);
+    plotZ     = createDiv('').id(idZ);
+
+    plotX    .position(divPad           , divPad);
+    plotY    .position(2*divPad+divSize   , divPad);
+    plotVals .position(divPad           , 2*divPad + divSize);
+
+    if(windowWidth>windowHeight){
+        plotAB   .position(divPad           , 3*divPad + 2*divSize);
+        plotCD   .position(2*divPad+divSize   , 3*divPad + 2*divSize);
+        plotZ    .position(2*divPad+divSize/2 , 4*divPad + 3*divSize);
+    }else{
+
+        plotAB   .position(3*divPad+2*divSize , divPad);
+        plotCD   .position(4*divPad+3*divSize , divPad);
+        plotZ    .position(2*divPad+2.5*divSize , 2*divPad + divSize);
+
+
+    }
+    
     plotX.style('border','2px solid');
     plotY.style('border','2px solid');
+    plotVals.style('border','2px solid');
+    plotAB.style('border','2px solid');
+    plotCD.style('border','2px solid');
+    plotZ.style('border','2px solid');
 
 
-
-    
 };
 
 function draw(){
 
-    background(200);orbitControl(10,10);
+    background(200);//orbitControl(10,10);
     strokeWeight(2)
 
     // Rotations X,Y,Z
@@ -104,9 +150,6 @@ function draw(){
     var xGrid = x/cellSize;
     var yGrid = y/cellSize;
     
-    //fadeInterpolation(xGrid)
-    smoothInterp(idx,xGrid,'X')
-    smoothInterp(idy,yGrid,'Y')
 
     drawGrid();
     drawReferentSystem();
@@ -152,12 +195,17 @@ function draw(){
         var temGradTL = getGradient( indexTL );
         var temGradTR = getGradient( indexTR );
 
+        valueA = vectorBL.dot(temGradBL);
+        valueB = vectorBR.dot(temGradBR);
+        valueC = vectorTL.dot(temGradTL);
+        valueD = vectorTR.dot(temGradTR);
+
         // Draw Projections
         /////////////////////////////////////////////////////
-        drawProjections(x,y,cornerBL,0,0,vectorBL,temGradBL,'a',[255,0,0])
-        drawProjections(x,y,cornerBL,1,0,vectorBR,temGradBR,'b',[0,255,0])
-        drawProjections(x,y,cornerBL,0,1,vectorTL,temGradTL,'c',[0,0,255])
-        drawProjections(x,y,cornerBL,1,1,vectorTR,temGradTR,'d',[255,0,255])
+        drawProjections(x,y,cornerBL,0,0,vectorBL,temGradBL,'A',[255,0,0])
+        drawProjections(x,y,cornerBL,1,0,vectorBR,temGradBR,'B',[0,255,0])
+        drawProjections(x,y,cornerBL,0,1,vectorTL,temGradTL,'C',[0,0,255])
+        drawProjections(x,y,cornerBL,1,1,vectorTR,temGradTR,'D',[255,0,255])
         
 
         // Draw Inputs vectors
@@ -169,9 +217,35 @@ function draw(){
             myUtils.drawArrow([cornerTL.x*cellSize,cornerTL.y*cellSize],[x,y], {color:[0,0,255]  , arrowHead:0.05}); // topLeft
             myUtils.drawArrow([cornerTR.x*cellSize,cornerTR.y*cellSize],[x,y], {color:[255,0,255], arrowHead:0.05}); // topRight
         pop()
-        
-    };
 
+
+        // Interpolations
+        ///////////////////
+        U = smoothInterp(idx,xGrid,txtX)
+        V = smoothInterp(idy,yGrid,txtY)
+        plotValues()
+
+        AB = lerpInterp(idAB,U,valueA,valueB,['<b>A','<b>B'],1);
+        CD = lerpInterp(idCD,U,valueC,valueD,['<b>C','<b>D'],2);
+        Z  = lerpInterp(idZ,V,AB,CD ,['<b>AB','<b>CD'],3);
+        
+    }else{
+
+        // Interpolations
+        ///////////////////
+
+        xGrid = 0;
+        yGrid = 0;
+        U = smoothInterp(idx,xGrid,txtX);
+        V = smoothInterp(idy,yGrid,txtY);
+        plotValues();
+
+        AB = lerpInterp(idAB,U,valueA,valueB,['<b>A','<b>B'],1);
+        CD = lerpInterp(idCD,U,valueC,valueD,['<b>C','<b>D'],2);
+        Z  = lerpInterp(idZ,V,AB,CD ,['<b>AB','<b>CD'],3);
+
+
+    };
     
 };
 
@@ -198,7 +272,7 @@ function drawGrid(){
 function drawReferentSystem(){
 
     push()
-
+    
         strokeWeight(3);stroke(0)
 
         line(-axisLength,0,0, axisLength,0,0);
@@ -258,10 +332,16 @@ function drawProjections(x,y,corner,dx,dy,cornerVec,gradientVec,txt,color){
 };
 
 function drawGradient(){
-	strokeWeight(1)
+
+	strokeWeight(3);
+    var module    = Math.sqrt(2)*cellSize/2.5;
+    var arrowHead = 0.1;
+    var color     = [255,255,255];
+
     for(let X=-nx;X<nx;X++){
         for(let Y=-ny;Y<ny;Y++){
-                 
+                
+
                 var indexX = X + nx;
                 var indexY = Y + ny;
                 
@@ -276,7 +356,7 @@ function drawGradient(){
                 var Gr = getGradient( indexTL );
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
-                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.04}); 
+                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:color, arrowHead:arrowHead,module:module}); 
 
 
                 var X1 = X*cellSize + cellSize;
@@ -284,21 +364,21 @@ function drawGradient(){
                 var Gr = getGradient( indexTR );
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
-                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.04}); 
+                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:color, arrowHead:arrowHead,module:module}); 
 
                 var X1 = X*cellSize;
                 var Y1 = Y*cellSize;
                 var Gr = getGradient( indexBL );
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
-                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.04}); 
+                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:color, arrowHead:arrowHead,module:module}); 
 
                 var X1 = X*cellSize+cellSize;
                 var Y1 = Y*cellSize;
                 var Gr = getGradient( indexBR );
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
-                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:[255,255,0], arrowHead:0.04}); 
+                myUtils.drawArrow([X1,Y1],[X2,Y2], {color:color, arrowHead:arrowHead,module:module}); 
         };
     };
 
@@ -315,26 +395,77 @@ function getGradient(index){
         return gradientBR
 
     }else if( k == 2){
-        return gradientTR
+        return gradientTL
 
     }else{
-        return gradientTL
+        return gradientTR
     };
 
 };
 
-function windowResized() {
+function plotValues(){
 
-    resizeCanvas(windowWidth, windowHeight);
-};
+        var traceA= {
+            x: [`<b>A<br>${(valueA).toFixed(4)}`],
+            y: [valueA],
+            type: 'bar',
+            marker:{color: 'rgb(255,0,0)',size: 8,line:  {color: 'rgb(0,0,0)',width:1}},
+        };
+
+        var traceB= {
+            x: [`<b>B<br>${(valueB).toFixed(4)}`],
+            y: [valueB],
+            type: 'bar',
+            marker:{color: 'rgb(0,255,0)',size: 8,line:  {color: 'rgb(0,0,0)',width:1}},
+        };
+
+        var traceC= {
+            x: [`<b>C<br>${(valueC).toFixed(4)}`],
+            y: [valueC],
+            type: 'bar',
+            marker:{color: 'rgb(0,0,255)',size: 8,line:  {color: 'rgb(0,0,0)',width:1}},
+        };
+
+        var traceD= {
+            x: [`<b>D<br>${(valueD).toFixed(4)}`],
+            y: [valueD],
+            type: 'bar',
+            marker:{color: 'rgb(255,0,255)',size: 8,line:  {color: 'rgb(0,0,0)',width:1}},
+        };
+
+        var data = [traceA,traceB,traceC,traceD];
+    
+        var layout = {
+            title: {text:`<b>Corners Values`,font:{size:13}},
+            showlegend: false,
+            width:  2*divSize +divPad,
+            height: divSize,
+            margin: {
+                l: 80,
+                r: 80,
+                b: 40,
+                t: 40,
+                pad: 4
+              },
+    
+              yaxis: {
+                        range: [-1.1,1.1],
+                        tickvals:[-1,0,1],
+                 },     
+          }
+    
+        var config = {   
+                        responsive: true,
+                        displayModeBar: false}
+          
+        Plotly.newPlot(idVals, data,layout,config);
+    
+}
 
 function smoothInterp(id,gridValue,txt){
-    
-
-    var minValue = floor(gridValue);
 
     // normalize values => scalar
-    var tn = gridValue-floor(gridValue)
+    var tn = gridValue-floor(gridValue);
     var sn = 6*tn**5-15*tn**4+10*tn**3
 
     // normalize values =>array
@@ -346,7 +477,7 @@ function smoothInterp(id,gridValue,txt){
         y: [sn,sn,0],
         mode: 'lines+markers',
         line:  {color: 'rgb(0,0,0)',width: 0.5},
-        marker:{color: 'rgb(127,127,127)',size: 8},
+        marker:{color: 'rgb(127,127,127)',size: 6},
     };
 
     var traceFunction = {
@@ -359,35 +490,36 @@ function smoothInterp(id,gridValue,txt){
 
     var data = [traceInterpolation,traceFunction];
 
+    var dxy = 0.15;
 
     var anotation = [  
                         // OUTPUT
                         {
-                        x: 0.15,
-                        y: sn +0.15,
+                        x: dxy,
+                        y: sn + dxy,
                         xref: 'x',
                         yref: 'y',
-                        text: `${(sn+minValue).toFixed(3)}`,
+                        text: `${(sn).toFixed(4)}`,
                         showarrow: false,
                         },
 
                         // INPUT
                         {
-                        x: tn +0.15,
-                        y: 0.15,
+                        x: tn + dxy,
+                        y: dxy,
                         xref: 'x',
                         yref: 'y',
-                        text: `${(tn+minValue).toFixed(3)}`,
+                        text: `${(tn).toFixed(4)}`,
                         showarrow: false,
                         }
                     ];
 
 
     var layout = {
-        title: {text:`<b>Interpolate ${txt} Grid`,font:{size:14}},
+        title: {text:`<b>Interpolate ${txt[0]}grid ${tn.toFixed(4)} <br> ${txt[1]}: ${sn.toFixed(4)} `,font:{size:13}},
         showlegend: false,
-        width:  200,
-        height: 200,
+        width:  divSize,
+        height: divSize,
         margin: {
             l: 25,
             r: 25,
@@ -397,14 +529,14 @@ function smoothInterp(id,gridValue,txt){
           },
 
           xaxis: {
-                    range: [0,1.1],
+                    range: [0,1.2],
                     tickvals:[0,1],
-                    ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
+                    //ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
              },
           yaxis: {
-                    range: [0,1.1],
+                    range: [0,1.2],
                     tickvals:[0,1],
-                    ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
+                    //ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
              },
 
          annotations:anotation
@@ -415,8 +547,119 @@ function smoothInterp(id,gridValue,txt){
                     responsive: true,
                     displayModeBar: false}
       
+    Plotly.newPlot(id, data,layout,config);
+
+    return sn
+
+};
+
+function lerpInterp(id,tn,min,max,txt,k){
+
+     
+    if(min<max){
+
+        var MIN = min;
+        var MAX = max;
+        
+    }else{
+         
+        var MIN = max;
+        var MAX = min;
+        txt.reverse();
+    }
+
+    if(k==1){
+
+        var txtTitle = 'Interpolate AB '
+        var uv = 'U';
+
+    }else if(k==2){
+
+        var txtTitle = 'Interpolate CD '
+        var uv = 'U';
+
+    }else if(k==3){
+
+        var txtTitle = 'noise2D(Xgrid,Ygrid) '
+        var uv = 'V';
+
+    };
+
+    var interp = (MAX-MIN)*tn + MIN;
+
+    var traceInterpolation = {
+        x: [0,tn,tn],
+        y: [interp,interp,0],
+        mode: 'lines+markers',
+        line:  {color: 'rgb(0,0,0)',width: 0.5},
+        marker:{color: 'rgb(127,127,127)',size: 6},
+    };
+
+    var traceFunction = {
+        x: [0,1],
+        y: [MIN,MAX],
+        mode: 'lines',
+        line:  {color: 'rgb(255,0,0)',width: 2}
+    };
+
+    var data = [traceInterpolation,traceFunction];
+
+    var anotation = [  
+                        // INPUT
+                        {
+                        x: tn+0.02,
+                        y: 0,
+                        xref: 'x',
+                        yref: 'y',
+                        text: `<b>${uv}`,
+                        showarrow: true,
+                        arrowhead: 2,
+                        ax: 20,
+                        ay: -20
+                        }
+                    ];
+
+
+    var layout = {
+        title: {text:`<b>${txtTitle}: ${interp.toFixed(4)} `,font:{size:12}},
+        showlegend: false,
+        width:  divSize,
+        height: divSize,
+        margin: {
+            l: 25,
+            r: 25,
+            b: 30,
+            t: 30,
+            pad: 2
+          },
+
+          xaxis: {
+                    range: [0,1.1],
+                    tickvals:[0,1],
+             },
+          yaxis: {
+                    //range:   [MIN*0.5,MAX*1.5],
+                    tickvals:[MIN,MAX],
+                    ticktext:txt,
+             },
+
+         annotations:anotation
+        
+      };
+
+    var config = {   
+                    responsive: true,
+                    displayModeBar: false}
+      
       Plotly.newPlot(id, data,layout,config)
 
+      return interp
 
+};
 
-}
+function windowResized() {
+
+    window.location.reload();
+    resizeCanvas(windowWidth, windowHeight);
+};
+
