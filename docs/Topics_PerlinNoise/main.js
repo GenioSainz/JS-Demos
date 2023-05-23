@@ -76,6 +76,10 @@ var txtY = ['Y','V'];
 var divSize = 180;
 var divPad  = 10;
 
+let noiseObject = new PerlinNoise();
+
+P = noiseObject.P;
+
 function setup() {
 
     createCanvas(windowWidth,windowHeight, WEBGL);
@@ -90,8 +94,6 @@ function setup() {
 
     gui = createGui('Rotation Axis').setPosition(windowWidth-150-divPad,divPad);
     gui.addGlobals('rX','rY','rZ','tZ');
-    
-    generatePermutation();
 
    
     plotX     = createDiv('').id(idx);
@@ -125,18 +127,18 @@ function setup() {
     plotCD.style('border','2px solid');
     plotZ.style('border','2px solid');
 
-
 };
 
 function draw(){
 
     background(200);//orbitControl(10,10);
-    strokeWeight(2)
+    strokeWeight(2);
 
     // Rotations X,Y,Z
     ////////////////////
-
-    rotateX(rX,);rotateY(rY);rotateZ(rZ);
+    rotateX(rX);
+    rotateY(rY);
+    rotateZ(rZ);
 
     translate(0,0,tZ)
      
@@ -149,13 +151,16 @@ function draw(){
     //////////////////////////
     var xGrid = x/cellSize;
     var yGrid = y/cellSize;
-    
+
+    // Index for indexing permutation table
+    ////////////////////////////////////////
+    var indexX = Math.floor(xGrid) & 255;
+    var indexY = Math.floor(yGrid) & 255;
 
     drawGrid();
     drawReferentSystem();
     getGradient();
     drawGradient();
-
 
     // If mouse is over grid
     ///////////////////////////
@@ -177,11 +182,6 @@ function draw(){
         vectorBR.set(xGrid-cornerBR.x, yGrid-cornerBR.y);  
         vectorTL.set(xGrid-cornerTL.x, yGrid-cornerTL.y); 
         vectorTR.set(xGrid-cornerTR.x, yGrid-cornerTR.y);  
-
-        // Index for indexing permutation table
-        ////////////////////////////////////////
-        var indexX = cornerBL.x + nx;
-        var indexY = cornerBL.y + ny;
 
         var indexBL = P[ P[indexX]   + indexY   ];
         var indexBR = P[ P[indexX+1] + indexY   ];
@@ -207,7 +207,6 @@ function draw(){
         drawProjections(x,y,cornerBL,0,1,vectorTL,temGradTL,'C',[0,0,255])
         drawProjections(x,y,cornerBL,1,1,vectorTR,temGradTR,'D',[255,0,255])
         
-
         // Draw Inputs vectors
         ///////////////////
         push()
@@ -218,8 +217,7 @@ function draw(){
             myUtils.drawArrow([cornerTR.x*cellSize,cornerTR.y*cellSize],[x,y], {color:[255,0,255], arrowHead:0.05}); // topRight
         pop()
 
-
-        // Interpolations
+        // Plot Interpolations
         ///////////////////
         U = smoothInterp(idx,xGrid,txtX)
         V = smoothInterp(idy,yGrid,txtY)
@@ -229,9 +227,30 @@ function draw(){
         CD = lerpInterp(idCD,U,valueC,valueD,['<b>C','<b>D'],2);
         Z  = lerpInterp(idZ,V,AB,CD ,['<b>AB','<b>CD'],3);
         
+        
+        // console.table class values vs scrpt values
+        // _ class values 
+        // var Z_ = noiseObject.eval(xGrid,yGrid).toFixed(4);
+        // var U_ = noiseObject.U.toFixed(4);
+        // var V_ = noiseObject.V.toFixed(4)
+        // var A_ = noiseObject.valueA.toFixed(4);
+        // var B_ = noiseObject.valueB.toFixed(4);
+        // var C_ = noiseObject.valueC.toFixed(4);
+        // var D_ = noiseObject.valueD.toFixed(4);
+        // var AB_ = noiseObject.valueAB.toFixed(4);
+        // var CD_ = noiseObject.valueCD.toFixed(4);
+
+        // var sep1 = '----------------------';
+        // var sep2 = '----------------------';
+        // var sep3 = '----------------------';
+        // console.table( {U_,V_,sep1,A_,B_,C_,D_,sep2,AB_,CD_,Z_,sep3,AB,CD,Z} )
+
+        //console.log({Z})
+
+
     }else{
 
-        // Interpolations
+        // Plot Interpolations
         ///////////////////
 
         xGrid = 0;
@@ -243,10 +262,7 @@ function draw(){
         AB = lerpInterp(idAB,U,valueA,valueB,['<b>A','<b>B'],1);
         CD = lerpInterp(idCD,U,valueC,valueD,['<b>C','<b>D'],2);
         Z  = lerpInterp(idZ,V,AB,CD ,['<b>AB','<b>CD'],3);
-
-
     };
-    
 };
 
 function drawGrid(){
@@ -290,25 +306,6 @@ function drawReferentSystem(){
 
 };
 
-function generatePermutation(){
-
-  for(let i = 0; i < 256; i++) {
-	     P[i] = i;
-  };
-
-  shuffleArray(P);
-
-};
-
-function shuffleArray(arrayToShuffle) {
-	for(let e = arrayToShuffle.length-1; e > 0; e--) {
-		const index = Math.round(Math.random()*(e-1));
-		const temp = arrayToShuffle[e];
-		
-		arrayToShuffle[e] = arrayToShuffle[index];
-		arrayToShuffle[index] = temp;
-	}
-};
 
 function drawProjections(x,y,corner,dx,dy,cornerVec,gradientVec,txt,color){
 
@@ -341,15 +338,13 @@ function drawGradient(){
     for(let X=-nx;X<nx;X++){
         for(let Y=-ny;Y<ny;Y++){
                 
-
-                var indexX = X + nx;
-                var indexY = Y + ny;
+                var indexX = X & 255;
+                var indexY = Y & 255;
                 
                 var indexBL = P[ P[indexX]   + indexY   ];
                 var indexBR = P[ P[indexX+1] + indexY   ];
                 var indexTL = P[ P[indexX]   + indexY+1 ];
                 var indexTR = P[ P[indexX+1] + indexY+1 ];
-                
                 
                 var X1 = X*cellSize;
                 var Y1 = Y*cellSize  + cellSize;
@@ -357,7 +352,6 @@ function drawGradient(){
                 var X2 = X1 + Gr.x*cellSize
                 var Y2 = Y1 + Gr.y*cellSize
                 myUtils.drawArrow([X1,Y1],[X2,Y2], {color:color, arrowHead:arrowHead,module:module}); 
-
 
                 var X1 = X*cellSize + cellSize;
                 var Y1 = Y*cellSize + cellSize;
@@ -560,28 +554,33 @@ function lerpInterp(id,tn,min,max,txt,k){
 
         var MIN = min;
         var MAX = max;
+
+        var lerpTxt = '';
         
     }else{
          
         var MIN = max;
         var MAX = min;
         txt.reverse();
+
+        tn = 1-tn;
+        var lerpTxt = '1-';
     }
 
     if(k==1){
 
         var txtTitle = 'Interpolate AB '
-        var uv = 'U';
+        var uv = `${lerpTxt}U`;
 
     }else if(k==2){
 
         var txtTitle = 'Interpolate CD '
-        var uv = 'U';
+        var uv = `${lerpTxt}U`;
 
     }else if(k==3){
 
         var txtTitle = 'noise2D(Xgrid,Ygrid) '
-        var uv = 'V';
+        var uv = `${lerpTxt}V`;
 
     };
 
@@ -616,9 +615,8 @@ function lerpInterp(id,tn,min,max,txt,k){
                         arrowhead: 2,
                         ax: 20,
                         ay: -20
-                        }
+                        },
                     ];
-
 
     var layout = {
         title: {text:`<b>${txtTitle}: ${interp.toFixed(4)} `,font:{size:12}},
@@ -662,4 +660,15 @@ function windowResized() {
     window.location.reload();
     resizeCanvas(windowWidth, windowHeight);
 };
+
+function lerpInterpolation(tn,a,b){
+         
+    return (b-a)*tn + a;
+};
+
+function smoothInterpolation(tn){
+ 
+    return 6*tn**5 - 15*tn**4 + 10*tn**3
+};
+
 

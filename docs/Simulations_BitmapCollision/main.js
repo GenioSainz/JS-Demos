@@ -16,8 +16,11 @@ var s0 = function( p ) {
                     p.pixelDensity(density)
                     p.createCanvas(p.windowWidth,p.windowHeight).position(0,0);
                     p.loadImage('../imgs/space.jpg', img => {
-                                                             p.image(img, 0, 0);});
-                    console.log('density', p.displayDensity());
+
+                        var w = img.width;
+                        var h = img.height;
+                        p.image(img, 0, 0,w,h);});
+                  
                    };
           // p.draw = function() {};
 };
