@@ -1,7 +1,7 @@
 
 
 let noiseObject = new PerlinNoise();
-var divSize     = 800;
+var divSize     = 900;
 var id0         = 'plot0';
 
 
@@ -23,9 +23,9 @@ function setup() {
 
 function plot3D(id){
 
-    var N = 1000;
-    var X = myUtils.linspace(2,20,N);
-    var Y = myUtils.linspace(4,40,N) ;
+    var N = 500;
+    var X = myUtils.linspace(0,N,N);
+    var Y = myUtils.linspace(0,N,N) ;
     var Z = [];
 
     for (let y = 0; y < N-1; y++) {
@@ -34,10 +34,10 @@ function plot3D(id){
         for (let x = 0; x < N; x++) {
 
             // Noise2D generally returns a value approximately in the range [-1.0, 1.0]
-            //let z = noiseObject.eval(x*0.005, y*0.005)*100;
-            let z = noise(x*0.001, y*0.001)*100;
-
-            row.push(`${z}`);
+            let z    = noiseObject.evalFractal(x, y);
+            let zMap = map(z,-1,1,100,200)
+            //let z = noise(x*0.001, y*0.001)*100;
+            row.push(`${zMap}`);
         }
 
         Z.push(row);
@@ -46,12 +46,21 @@ function plot3D(id){
     // Plotting the mesh
     var data=[
         {
-        opacity:0.8,
+        opacity:1,
         color:'rgb(300,100,200)',
         type: 'surface',
+        colorscale:'Viridis',
         x: X,
-        // y: Y,
+        y: Y,
         z: Z,
+        contours: {
+            z: {
+              show:true,
+              //usecolormap: true,
+              highlightcolor:"white",
+              //project:{z: false}
+            }
+          }
         }
     ];
 
@@ -60,6 +69,28 @@ function plot3D(id){
         // showlegend: false,
         width:  divSize,
         height: divSize,
+
+        scene:{
+
+            aspectratio: {x:1, y:1, z:0.2},
+            xaxis:{ backgroundcolor: "rgb(230, 200,230)",
+                    gridcolor: "rgb(255,255,255)",
+                    showbackground: true,
+                    zerolinecolor: "rgb(0,0,0)",
+            },
+            yaxis:{ backgroundcolor: "rgb(230, 200,230)",
+                    gridcolor: "rgb(255,255,255)",
+                    showbackground: true,
+                    zerolinecolor: "rgb(255, 255, 255)",
+            },
+            zaxis:{ backgroundcolor: "rgb(230, 200,230)",
+                    gridcolor: "rgb(255,255,255)",
+                    showbackground: true,
+                    zerolinecolor: "rgb(0,0,0)",
+           }
+        },
+
+
         margin: {
             l: 25,
             r: 25,
@@ -70,40 +101,4 @@ function plot3D(id){
       };
     Plotly.newPlot(id, data, layout);
 
-}
-
-function plot3D2(id){
-
-    d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv', function(err, rows){
-        function unpack(rows, key) {
-        return rows.map(function(row) { return row[key]; });
-    }
-
-    var z_data=[ ]
-    for(i=0;i<24;i++)
-    {
-    z_data.push(unpack(rows,i));
-    }
-
-    console.log(z_data)
-
-    var data = [{
-            z: z_data,
-            type: 'surface'
-            }];
-
-    var layout = {
-    title: 'Mt Bruno Elevation',
-    autosize: false,
-    width: divSize,
-    height: divSize,
-    margin: {
-        l: 65,
-        r: 50,
-        b: 65,
-        t: 90,
-    }
-    };
-    Plotly.newPlot(id, data, layout);
-    });
 }

@@ -3,36 +3,9 @@ var dxy         = 15;
 var P           = [];
 
 var cellSize   = 200;
-var axisLength = cellSize/2;
-var nx         = 2;
-var ny         = 2;
-var myFont;
-var gui;
-
+var nXY        = 4;
 
 var gradientArray
-var angelStep = 10;
-
-var rXStep = angelStep;
-var rXMin  = -180;
-var rXMax  =  180;
-var rX     = 0;
-
-var rYStep = angelStep;
-var rYMin  = -180;
-var rYMax  =  180;
-var rY     = 0;
-
-var rZStep = angelStep;
-var rZMin  = -180;
-var rZMax  =  180;
-var rZ     = 0;
-
-var tZStep = 50;
-var tZMin  = -1000;
-var tZMax  =  1000;
-var tZ     = 0;
-
 
 let vectorBL = new p5.Vector(0,0); // bottomLeft
 let vectorBR = new p5.Vector(0,0); // bottomRight
@@ -54,8 +27,8 @@ let valueB = 0;
 let valueC = 0;
 let valueD = 0;
 
-let U = 0;
-let V = 0;
+let U  = 0;
+let V  = 0;
 let AB = 0;
 let CD = 0;
 let Z  = 0;
@@ -77,25 +50,16 @@ var divSize = 180;
 var divPad  = 10;
 
 let noiseObject = new PerlinNoise();
-
 P = noiseObject.P;
 
 function setup() {
 
-    createCanvas(windowWidth,windowHeight, WEBGL);
-    angleMode(DEGREES);strokeWeight(5);
+    createCanvas(windowWidth,windowHeight);angleMode(DEGREES);
 
-    frameRate(10);
+    frameRate(5);
 
-    myFont = loadFont('font.otf');
-    textFont(myFont);
-    textSize(16);
-    textAlign(CENTER,CENTER);
+    textSize(14);textAlign(CENTER,CENTER);textStyle(BOLD);
 
-    gui = createGui('Rotation Axis').setPosition(windowWidth-150-divPad,divPad);
-    gui.addGlobals('rX','rY','rZ','tZ');
-
-   
     plotX     = createDiv('').id(idx);
     plotY     = createDiv('').id(idy);
     plotVals  = createDiv('').id(idVals);
@@ -104,21 +68,20 @@ function setup() {
     plotZ     = createDiv('').id(idZ);
 
     plotX    .position(divPad           , divPad);
-    plotY    .position(2*divPad+divSize   , divPad);
+    plotY    .position(2*divPad+divSize , divPad);
     plotVals .position(divPad           , 2*divPad + divSize);
 
     if(windowWidth>windowHeight){
-        plotAB   .position(divPad           , 3*divPad + 2*divSize);
-        plotCD   .position(2*divPad+divSize   , 3*divPad + 2*divSize);
-        plotZ    .position(2*divPad+divSize/2 , 4*divPad + 3*divSize);
+
+        plotAB .position( divPad             , 3*divPad + 2*divSize);
+        plotCD .position( 2*divPad+divSize   , 3*divPad + 2*divSize);
+        plotZ  .position( 2*divPad+divSize/2 , 4*divPad + 3*divSize);
     }else{
 
-        plotAB   .position(3*divPad+2*divSize , divPad);
-        plotCD   .position(4*divPad+3*divSize , divPad);
-        plotZ    .position(2*divPad+2.5*divSize , 2*divPad + divSize);
-
-
-    }
+        plotAB .position( 3*divPad+2*divSize   , divPad);
+        plotCD .position( 4*divPad+3*divSize   , divPad);
+        plotZ  .position( 2*divPad+2.5*divSize , 2*divPad + divSize);
+    };
     
     plotX.style('border','2px solid');
     plotY.style('border','2px solid');
@@ -131,23 +94,19 @@ function setup() {
 
 function draw(){
 
-    background(200);//orbitControl(10,10);
+    background(180);
     strokeWeight(2);
-
-    // Rotations X,Y,Z
-    ////////////////////
-    rotateX(rX);
-    rotateY(rY);
-    rotateZ(rZ);
-
-    translate(0,0,tZ)
+    
+    // Translate Center
+    //////////////////////
+    translate(windowWidth/2 - 2*cellSize, windowHeight/2 - 2*cellSize)
      
-    //  (0,0) = (windowWidth/2, windowHeight/2)
+    //  (0,0) = (windowWidth/2 - 2*cellSize, windowHeight/2 -2*cellSize)
     /////////////////////////////////////////////
-    var x = mouseX-windowWidth/2;
-    var y = mouseY-windowHeight/2;
+    var x = mouseX - windowWidth/2  + 2*cellSize;
+    var y = mouseY - windowHeight/2 + 2*cellSize;
    
-    // -nx:1:nx   -ny:1:ny
+    // eje1 (0.1,2.2)
     //////////////////////////
     var xGrid = x/cellSize;
     var yGrid = y/cellSize;
@@ -164,8 +123,8 @@ function draw(){
 
     // If mouse is over grid
     ///////////////////////////
-    var boolX = xGrid>=-nx && xGrid<=nx;
-    var boolY = yGrid>=-ny && yGrid<=ny;
+    var boolX = xGrid>=0 && xGrid<=nXY;
+    var boolY = yGrid>=0 && yGrid<=nXY;
 
     if(boolX && boolY){
         
@@ -202,13 +161,13 @@ function draw(){
 
         // Draw Projections
         /////////////////////////////////////////////////////
-        drawProjections(x,y,cornerBL,0,0,vectorBL,temGradBL,'A',[255,0,0])
-        drawProjections(x,y,cornerBL,1,0,vectorBR,temGradBR,'B',[0,255,0])
-        drawProjections(x,y,cornerBL,0,1,vectorTL,temGradTL,'C',[0,0,255])
-        drawProjections(x,y,cornerBL,1,1,vectorTR,temGradTR,'D',[255,0,255])
+        drawProjections(x,y,cornerBL,0,0,vectorBL,temGradBL,[255,0,0])
+        drawProjections(x,y,cornerBL,1,0,vectorBR,temGradBR,[0,255,0])
+        drawProjections(x,y,cornerBL,0,1,vectorTL,temGradTL,[0,0,255])
+        drawProjections(x,y,cornerBL,1,1,vectorTR,temGradTR,[255,0,255])
         
         // Draw Inputs vectors
-        ///////////////////
+        /////////////////////////
         push()
             strokeWeight(2)
             myUtils.drawArrow([cornerBL.x*cellSize,cornerBL.y*cellSize],[x,y], {color:[255,0,0]  , arrowHead:0.05}); // bottomLeft
@@ -216,18 +175,36 @@ function draw(){
             myUtils.drawArrow([cornerTL.x*cellSize,cornerTL.y*cellSize],[x,y], {color:[0,0,255]  , arrowHead:0.05}); // topLeft
             myUtils.drawArrow([cornerTR.x*cellSize,cornerTR.y*cellSize],[x,y], {color:[255,0,255], arrowHead:0.05}); // topRight
         pop()
+        
+        // Draw Circle Corners
+        /////////////////////////
+        push();
+           fill(255);strokeWeight(1)
+           circle(cornerBL.x*cellSize,cornerBL.y*cellSize,cellSize/10);
+           circle(cornerBR.x*cellSize,cornerBR.y*cellSize,cellSize/10);
+           circle(cornerTL.x*cellSize,cornerTL.y*cellSize,cellSize/10);
+           circle(cornerTR.x*cellSize,cornerTR.y*cellSize,cellSize/10);
+           fill(0);
+           text('A',cornerBL.x*cellSize,cornerBL.y*cellSize);
+           text('B',cornerBR.x*cellSize,cornerBR.y*cellSize);
+           text('C',cornerTL.x*cellSize,cornerTL.y*cellSize);
+           text('D',cornerTR.x*cellSize,cornerTR.y*cellSize);
+        pop();
 
         // Plot Interpolations
-        ///////////////////
+        /////////////////////////
         U = smoothInterp(idx,xGrid,txtX)
         V = smoothInterp(idy,yGrid,txtY)
-        plotValues()
+        plotValues();
 
         AB = lerpInterp(idAB,U,valueA,valueB,['<b>A','<b>B'],1);
         CD = lerpInterp(idCD,U,valueC,valueD,['<b>C','<b>D'],2);
         Z  = lerpInterp(idZ,V,AB,CD ,['<b>AB','<b>CD'],3);
         
         
+        // console.log('-------')
+        // console.table({xGrid,yGrid,indexX,indexY,temGradBL,temGradBR,temGradTL,temGradTR})
+
         // console.table class values vs scrpt values
         // _ class values 
         // var Z_ = noiseObject.eval(xGrid,yGrid).toFixed(4);
@@ -244,21 +221,19 @@ function draw(){
         // var sep2 = '----------------------';
         // var sep3 = '----------------------';
         // console.table( {U_,V_,sep1,A_,B_,C_,D_,sep2,AB_,CD_,Z_,sep3,AB,CD,Z} )
-
-        //console.log({Z})
+        // console.log({Z})
 
 
     }else{
 
         // Plot Interpolations
         ///////////////////
-
-        xGrid = 0;
-        yGrid = 0;
+        xGrid = 0; yGrid = 0;
         U = smoothInterp(idx,xGrid,txtX);
         V = smoothInterp(idy,yGrid,txtY);
         plotValues();
-
+        
+        valueA = 0; valueB = 0; valueC = 0; valueD = 0;
         AB = lerpInterp(idAB,U,valueA,valueB,['<b>A','<b>B'],1);
         CD = lerpInterp(idCD,U,valueC,valueD,['<b>C','<b>D'],2);
         Z  = lerpInterp(idZ,V,AB,CD ,['<b>AB','<b>CD'],3);
@@ -266,9 +241,10 @@ function draw(){
 };
 
 function drawGrid(){
-
-    for(let x=-nx;x<nx;x++){
-         for(let y=-ny;y<ny;y++){
+    
+    //  Grid
+    for(let x=0;x<nXY;x++){
+         for(let y=0;y<nXY;y++){
             
             var xc = x*cellSize;
             var yc = y*cellSize;
@@ -276,41 +252,32 @@ function drawGrid(){
             rect(xc,yc,cellSize);
         };
     };
-
-    for(let i=-nx;i<=nx;i++){
-
-        fill(0)
-        text(`${i}`,i*cellSize,nx*cellSize+dxy);
-        text(`${i}`,-nx*cellSize-dxy,i*cellSize);
+    
+    // Text X
+    for(let i=0;i<=nXY;i++){
+        fill(0);text(`x${i}`,i*cellSize,nXY*cellSize+dxy);
+    };
+    
+    // Text Y
+    for(let i=0;i<=nXY;i++){
+        fill(0);text(`y${i}`,-dxy,i*cellSize);
     };
 };
 
 function drawReferentSystem(){
-
     push()
-    
-        strokeWeight(3);stroke(0)
+        strokeWeight(3)
+        myUtils.drawArrow([0,0],[cellSize/2,0], {color:[0,0,0]  , arrowHead:0.1});
+        myUtils.drawArrow([0,0],[0,cellSize/2], {color:[0,0,0]  , arrowHead:0.1});
+        text('x+',cellSize/2,-dxy);
+        text('y+',-dxy,cellSize/2);
+    pop()
+}
 
-        line(-axisLength,0,0, axisLength,0,0);
-        line(0,-axisLength,0, 0,axisLength,0);
-        line(0,0,-axisLength, 0,0,axisLength);
+function drawProjections(x,y,cornerBL,dx,dy,cornerVec,gradientVec,color){
 
-        stroke(0)
-        text('+X',axisLength+dxy,dxy);
-        text('+y',dxy,axisLength+dxy);
-
-        translate(0,0,axisLength)
-        text('+Z',dxy,-dxy);
-
-    pop();
-
-};
-
-
-function drawProjections(x,y,corner,dx,dy,cornerVec,gradientVec,txt,color){
-
-    var X1           = corner.x*cellSize + dx*cellSize;
-    var Y1           = corner.y*cellSize + dy*cellSize;   
+    var X1           = cornerBL.x*cellSize + dx*cellSize;
+    var Y1           = cornerBL.y*cellSize + dy*cellSize;   
     var a            = cornerVec.copy().mult(cellSize);
     var b            = gradientVec.copy().mult(cellSize);
     var num          = a.dot(b);
@@ -320,11 +287,16 @@ function drawProjections(x,y,corner,dx,dy,cornerVec,gradientVec,txt,color){
     var Y2           = Y1 + proyection.y
 
     push()
-        strokeWeight(0.5);stroke(0); line(x,y,X2,Y2);
-        strokeWeight(1);stroke(color);line(X1,Y1,X2,Y2);
-        line(X1,Y1,0,X1,Y1,num/cellSize);
-        translate(X1,Y1,num/cellSize)
-        fill(color);text(txt,dxy,dxy);
+
+        drawingContext.setLineDash([5,5]);
+        // Line from corner to mouse
+        ///////////////////////////////
+        strokeWeight(1);stroke(0); line(x,y,X2,Y2);
+
+        // Projection Line
+        /////////////////////
+        strokeWeight(2);stroke(color);line(X1,Y1,X2,Y2);
+
     pop();
 };
 
@@ -335,8 +307,8 @@ function drawGradient(){
     var arrowHead = 0.1;
     var color     = [255,255,255];
 
-    for(let X=-nx;X<nx;X++){
-        for(let Y=-ny;Y<ny;Y++){
+    for(let X=0;X<nXY;X++){
+        for(let Y=0;Y<nXY;Y++){
                 
                 var indexX = X & 255;
                 var indexY = Y & 255;
@@ -484,7 +456,7 @@ function smoothInterp(id,gridValue,txt){
 
     var data = [traceInterpolation,traceFunction];
 
-    var dxy = 0.15;
+    var dxy = 0.2;
 
     var anotation = [  
                         // OUTPUT
@@ -510,7 +482,8 @@ function smoothInterp(id,gridValue,txt){
 
 
     var layout = {
-        title: {text:`<b>Interpolate ${txt[0]}grid ${tn.toFixed(4)} <br> ${txt[1]}: ${sn.toFixed(4)} `,font:{size:13}},
+
+        title: {text:`<b>Interpolate ${txt[0]}grid ${gridValue.toFixed(4)} <br> ${txt[1]}: ${sn.toFixed(4)} `,font:{size:13}},
         showlegend: false,
         width:  divSize,
         height: divSize,
@@ -521,20 +494,15 @@ function smoothInterp(id,gridValue,txt){
             t: 25,
             pad: 4
           },
-
           xaxis: {
                     range: [0,1.2],
                     tickvals:[0,1],
-                    //ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
              },
           yaxis: {
                     range: [0,1.2],
                     tickvals:[0,1],
-                    //ticktext:[`${floor(gridValue)}`, `${ceil(gridValue)}`],
              },
-
          annotations:anotation
-        
       }
 
     var config = {   
@@ -550,7 +518,7 @@ function smoothInterp(id,gridValue,txt){
 function lerpInterp(id,tn,min,max,txt,k){
 
      
-    if(min<max){
+    if(min<=max){
 
         var MIN = min;
         var MAX = max;
@@ -670,5 +638,7 @@ function smoothInterpolation(tn){
  
     return 6*tn**5 - 15*tn**4 + 10*tn**3
 };
+
+
 
 

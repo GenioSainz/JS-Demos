@@ -8,7 +8,7 @@ class PerlinNoise {
         this.xn = 0;
         this.yn = 0;
         
-        // permutation table indendex
+        // permutation table index
         this.X = 0;
         this.Y = 0;
 
@@ -45,11 +45,13 @@ class PerlinNoise {
     };
 
     createPermutation(){
-
+        
+        // Create
         for(let i = 0; i < 256; i++) {
             this.P[i] = i;
         };
-
+        
+        // Suffle table
         for (var i = this.P.length - 1; i > 0; i--) {
 
                 var j = Math.floor( Math.random() * (i + 1));
@@ -63,7 +65,7 @@ class PerlinNoise {
         
         this.xn = x-Math.floor(x);
         this.yn = y-Math.floor(y);
-
+        
         this.vectorBL.set( this.xn  , this.yn  );  
         this.vectorBR.set( this.xn-1, this.yn  );  
         this.vectorTL.set( this.xn  , this.yn-1); 
@@ -92,6 +94,21 @@ class PerlinNoise {
 
         return this.valueZ
 
+    };
+
+    evalFractal(x,y,{nOctaves=2,f=0.005}={}){
+
+        let A = 1;
+        let z = 0;
+
+        for(let octave=0;octave<nOctaves;octave++){
+
+            z+= A * this.eval(x*f,y*f);
+            A*= 0.5;
+            f*= 2;
+        };
+
+        return z
     };
 
     getGradient(index){
