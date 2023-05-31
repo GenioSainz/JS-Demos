@@ -1,21 +1,23 @@
 
 
 let noiseObject = new PerlinNoise();
-var divSize     = 900;
 var id0         = 'plot0';
-
+var divPad      = 50;
+var divSizeW
+var divSizeH
 
 function setup() {
 
-    createCanvas(windowWidth,windowHeight, WEBGL);
-    angleMode(DEGREES);strokeWeight(5);
+    createCanvas(windowWidth,windowHeight);
 
-    frameRate(3);
+    divSizeH = windowHeight - 2*divPad;
+    divSizeW = windowWidth  - 2*divPad;
 
     createDiv('')
                  .id(id0)
-                 .position(windowWidth/2-divSize/2,windowHeight/2-divSize/2)
+                 .position(windowWidth/2-divSizeW/2,windowHeight/2-divSizeH/2)
                  .style('border','2px solid');
+
 
     plot3D(id0);
 }
@@ -28,15 +30,23 @@ function plot3D(id){
     var Y = myUtils.linspace(0,N,N) ;
     var Z = [];
 
-    for (let y = 0; y < N-1; y++) {
+    var zMin = 0;
+    var zMax = 200;
+    var f    = 0.005;
+
+    var axisColor = "rgb(200, 200,230)";
+
+    for (let y = 0; y < N; y++) {
 
         var row = [];
         for (let x = 0; x < N; x++) {
 
             // Noise2D generally returns a value approximately in the range [-1.0, 1.0]
-            let z    = noiseObject.evalFractal(x, y);
-            let zMap = map(z,-1,1,100,200)
-            //let z = noise(x*0.001, y*0.001)*100;
+            // let z    = noiseObject.evalFractal(x, y,{f:0.003});
+            // let zMap = map(z,-1,1,100,200)
+            let zMap = noise(x*f, y*f)*200;
+            // let gridCellSize = 1;
+            // zMap = Math.round(zMap/gridCellSize)*gridCellSize
             row.push(`${zMap}`);
         }
 
@@ -49,16 +59,18 @@ function plot3D(id){
         opacity:1,
         color:'rgb(300,100,200)',
         type: 'surface',
-        colorscale:'Viridis',
+        colorscale:'Earth',
         x: X,
         y: Y,
         z: Z,
         contours: {
             z: {
               show:true,
-              //usecolormap: true,
               highlightcolor:"white",
-              //project:{z: false}
+              start:zMin,
+              end:zMax,
+              size: 5,
+              highlightwidth:10,
             }
           }
         }
@@ -67,38 +79,52 @@ function plot3D(id){
     var layout = {
         // title: {text:`<b>${txtTitle}: ${interp.toFixed(4)} `,font:{size:12}},
         // showlegend: false,
-        width:  divSize,
-        height: divSize,
+        width:  divSizeW,
+        height: divSizeH,
 
         scene:{
 
             aspectratio: {x:1, y:1, z:0.2},
-            xaxis:{ backgroundcolor: "rgb(230, 200,230)",
+            xaxis:{ backgroundcolor: axisColor ,
                     gridcolor: "rgb(255,255,255)",
                     showbackground: true,
                     zerolinecolor: "rgb(0,0,0)",
             },
-            yaxis:{ backgroundcolor: "rgb(230, 200,230)",
+            yaxis:{ backgroundcolor: axisColor ,
                     gridcolor: "rgb(255,255,255)",
                     showbackground: true,
                     zerolinecolor: "rgb(255, 255, 255)",
             },
-            zaxis:{ backgroundcolor: "rgb(230, 200,230)",
+            zaxis:{ backgroundcolor: axisColor ,
                     gridcolor: "rgb(255,255,255)",
                     showbackground: true,
                     zerolinecolor: "rgb(0,0,0)",
-           }
+           },
+
+        //    camera: {
+        //         center: {x:0, y:0, z:0}, 
+        //         eye:    {x:0.1, y:0.1, z:0.1}, 
+        //         up:     {x:0, y:0, z:1}
+		//    }
         },
 
 
         margin: {
             l: 25,
             r: 25,
-            b: 35,
-            t: 35,
-            pad: 2
+            b: 25,
+            t: 25,
+            pad: 0
           },
       };
-    Plotly.newPlot(id, data, layout);
+
+    Plotly.newPlot(id, data, layout)
 
 }
+
+
+function windowResized() {
+
+    window.location.reload();
+    resizeCanvas(windowWidth, windowHeight);
+};

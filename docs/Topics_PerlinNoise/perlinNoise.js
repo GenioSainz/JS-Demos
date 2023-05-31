@@ -115,6 +115,8 @@ class PerlinNoise {
 
         var  k = index % 4;
 
+        console.log(k)
+
         if( k == 0){
             return this.gradientBL
     
