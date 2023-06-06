@@ -1,15 +1,16 @@
 
 var NumeroDeVanos = 4;
+var dataObject    = {};
 
 for(let i=3;i<=5;i++){
   
         var radio = document.getElementById(`inlineRadio${i}`);
         if(i==NumeroDeVanos){ radio.checked=true };
 
-        radio.addEventListener('input',(e)=>{
+        radio.addEventListener('input',()=>{
 
                                         NumeroDeVanos = i;
-                                        initLayout()
+                                        initLayout();
                                        });
 };
 
@@ -65,6 +66,8 @@ function initLayout(){
   document.getElementById('plotID').on('plotly_sliderchange', function (e) {
             updatePlot();
            });
+
+  plotTable();
           
 };
 
@@ -72,9 +75,9 @@ function getAllTraces({vanos=defaultV,angulos=defaultA,conductores=defaultC}={})
 
 
   angulos = angulos.map(theta => theta*Math.PI/180);
+  calcData(vanos,angulos,conductores);
 
-  var {tenses,tenseTotal,per1,per2,proyecciones} = proyections(vanos,angulos,conductores);
-
+  var {vanosArray,tensesArray,proyeccionesArray,tenseTotalVec,per1,per2} = dataObject;
   
   var apoyosTraces     = [];
   var semiVanosTraces  = [];
@@ -87,21 +90,21 @@ function getAllTraces({vanos=defaultV,angulos=defaultA,conductores=defaultC}={})
   // subplot Vanos
   for(let i =0;i<NumeroDeVanos;i++){
     
-    var vanoi      = vanos[i];
-    var the        = angulos[i];
-    var proyection = proyecciones[i]
+    var vanoi       = vanosArray[i];
+    var tensei      = tensesArray[i]
+    var proyectioni = proyeccionesArray[i]
 
     vanosTraces.push({
-                      x: [0, vanoi*Math.cos(the)],
-                      y: [0, vanoi*Math.sin(the)],
+                      x: [0, vanoi.x],
+                      y: [0, vanoi.y],
                       type: 'lines',
                       line:   {color: 'blue',width: 2},
                       xaxis: 'x1',
                       yaxis: 'y1'});
 
     apoyosTraces.push({
-                       x: [vanoi*Math.cos(the)],
-                       y: [vanoi*Math.sin(the)],
+                       x: [vanoi.x],
+                       y: [vanoi.y],
                        name: `Apoyo${i+1}`,
                        type: 'scatter',
                        line:   {color: 'blue',width: 2},
@@ -110,8 +113,8 @@ function getAllTraces({vanos=defaultV,angulos=defaultA,conductores=defaultC}={})
                        yaxis: 'y1'});
 
     semiVanosTraces.push({
-                          x: [vanoi*Math.cos(the)/2,proyection.x],
-                          y: [vanoi*Math.sin(the)/2,proyection.y],
+                          x: [vanoi.x/2,proyectioni.x],
+                          y: [vanoi.y/2,proyectioni.y],
                           name: `Semivano${i+1}`,
                           type: 'lines+markers',
                           marker: {size:10,color:'red',symbol:"circle-open"}, 
@@ -120,22 +123,24 @@ function getAllTraces({vanos=defaultV,angulos=defaultA,conductores=defaultC}={})
                           yaxis: 'y1'});
 
     anottationsArray.push({
-                           x: 1.25*vanoi*Math.cos(the),
-                           y: 1.25*vanoi*Math.sin(the),
+                           x: 1.25*vanoi.x,
+                           y: 1.25*vanoi.y,
                            font: {size:11,color: 'black'},
                            bgcolor: 'white',
                            bordercolor: '#c7c7c7',
                            xref: 'x1',
                            yref: 'y1',
-                           text: `Vano ${i+1}<br>${vanoi}m`,
+                           text: `Vano ${i+1}<br>${Math.round(vanoi.norm)}m`,
                            showarrow:false});
   };
 
   //subplot Tenses
   for(let i =0;i<NumeroDeVanos+1;i++){
+
+    var tensei = tensesArray[i]
     
     if(i==NumeroDeVanos){
-      var annotationTxt = `TenseTotal<br>${Math.round(tenseTotal.norm)}kp`;
+      var annotationTxt = `TenseTotal<br>${Math.round(tenseTotalVec.norm)}kp`;
       var colorVector   = 'red'
     }else{
       var annotationTxt = `Tense ${i+1}<br>${conductoresData[conductores[i]].tMax}kp`;
@@ -143,8 +148,8 @@ function getAllTraces({vanos=defaultV,angulos=defaultA,conductores=defaultC}={})
     }
 
     tensesTraces.push({
-                      x: [0,tenses[i].x],
-                      y: [0,tenses[i].y],
+                      x: [0,tensei.x],
+                      y: [0,tensei.y],
                       type: 'lines',
                       line:   {color: colorVector,width: 2},
                       marker: {size:0.1,color:'white'}, 
@@ -152,7 +157,7 @@ function getAllTraces({vanos=defaultV,angulos=defaultA,conductores=defaultC}={})
                       yaxis: 'y2'});
 
 
-    var {arrowX,arrowY} = calcArrows(tenses[i]);   
+    var {arrowX,arrowY} = calcArrows(tensei);   
 
     arrowTraces.push({
                     x: arrowX,
@@ -164,8 +169,8 @@ function getAllTraces({vanos=defaultV,angulos=defaultA,conductores=defaultC}={})
                     yaxis: 'y2'});                 
     
     anottationsArray.push({
-                          x: tenses[i].x/2,
-                          y: tenses[i].y/2,
+                          x: tensei.x/2,
+                          y: tensei.y/2,
                           font: {size:11,color: 'black'},
                           bgcolor: 'white',
                           bordercolor: '#c7c7c7',
@@ -268,34 +273,48 @@ function updatePlot(){
   Plotly.relayout( plotID, updateAnnotations);
   Plotly.restyle ( plotID, updateTraces);
 
+  plotTable();
+
 };
 
-function proyections(vanos,angulos,conductores){
-
-  var tenses       = [];
-  var proyecciones = [];
-  var tenseTotal   = {x:0,y:0,norm:0};
+function calcData(vanos,angulos,conductores){
+  
+  var vanosArray        = [];
+  var tensesArray       = [];
+  var proyeccionesArray = [];
+  var conductoresArray  = [];
+  var FVArray           = [];
+  var FVTotal           = 0;
+  var FT                = 0;
+  var tenseTotalVec     = new p5.Vector(0,0);
   
 
   for(let i =0;i<NumeroDeVanos;i++){
     
-    var the    = angulos[i];
+    var theta  = angulos[i];
     var vanosi = vanos[i];
     var tensei = conductoresData[ conductores[i] ].tMax;
-    var xtense = tensei*Math.cos(the);
-    var ytense = tensei*Math.sin(the);
-    tenses.push( {x:xtense,y:ytense} );
+   
+    var vanoVec  = new p5.Vector.fromAngle( theta, vanosi);
+    var tenseVec = new p5.Vector.fromAngle( theta, tensei);
 
-    tenseTotal.x += xtense;
-    tenseTotal.y += ytense;
+    tenseTotalVec.add(tenseVec);
 
+    vanoVec.norm  = vanoVec.mag();
+    tenseVec.norm = tenseVec.mag();
+
+    vanosArray.push ( vanoVec );
+    tensesArray.push( tenseVec );
+    conductoresArray.push( conductoresData[ conductores[i] ] )
   };
 
-  tenses.push( {x:tenseTotal.x,y:tenseTotal.y } );
+  tenseTotalVec.norm = tenseTotalVec.mag();
+  tensesArray.push(tenseTotalVec);
 
-  var tenseTotalAngle = Math.atan2(tenseTotal.y,tenseTotal.x);
-  var tenseTotalNorm  = Math.sqrt(tenseTotal.x**2 + tenseTotal.y**2);
-      tenseTotal.norm = tenseTotalNorm;
+
+  var tenseTotalAngle = Math.atan2(tenseTotalVec.y,tenseTotalVec.x);
+  var tenseTotalNorm  = tenseTotalVec.norm;
+      
   
   if(tenseTotalNorm<1){
 
@@ -307,36 +326,41 @@ function proyections(vanos,angulos,conductores){
     var perMaxNormT = conductoresData[0].tMax;
   }
 
-  var per1       = {
-                    xVanos:  perMaxNormV * Math.cos(tenseTotalAngle+Math.PI/2), 
-                    yVanos:  perMaxNormV * Math.sin(tenseTotalAngle+Math.PI/2),
-                    xTenses: perMaxNormT * Math.cos(tenseTotalAngle+Math.PI/2), 
-                    yTenses: perMaxNormT * Math.sin(tenseTotalAngle+Math.PI/2)
-                  };
+  var per1 = {
+              xVanos:  perMaxNormV * Math.cos(tenseTotalAngle+Math.PI/2), 
+              yVanos:  perMaxNormV * Math.sin(tenseTotalAngle+Math.PI/2),
+              xTenses: perMaxNormT * Math.cos(tenseTotalAngle+Math.PI/2), 
+              yTenses: perMaxNormT * Math.sin(tenseTotalAngle+Math.PI/2)
+             };
 
-  var per2       = {xVanos:  perMaxNormV * Math.cos(tenseTotalAngle-Math.PI/2), 
-                    yVanos:  perMaxNormV * Math.sin(tenseTotalAngle-Math.PI/2),
-                    xTenses: perMaxNormT * Math.cos(tenseTotalAngle-Math.PI/2), 
-                    yTenses: perMaxNormT * Math.sin(tenseTotalAngle-Math.PI/2)
-                  };
+  var per2 = { 
+               xVanos:  perMaxNormV * Math.cos(tenseTotalAngle-Math.PI/2), 
+               yVanos:  perMaxNormV * Math.sin(tenseTotalAngle-Math.PI/2),
+               xTenses: perMaxNormT * Math.cos(tenseTotalAngle-Math.PI/2), 
+               yTenses: perMaxNormT * Math.sin(tenseTotalAngle-Math.PI/2)
+              };
   
   for(let i =0;i<NumeroDeVanos;i++){
 
-      var the    = angulos[i];
-      var vanosi = vanos[i];
-
-      var semiVano = new p5.Vector(vanosi*Math.cos(the),vanosi*Math.sin(the)).mult(0.5);
+      var semiVano = vanosArray[i].copy().mult(0.5);
       var per      = new p5.Vector(per1.xVanos,per1.yVanos);
 
-      var proyecionScalar = p5.Vector.dot(semiVano,per)/p5.Vector.dot(per,per);
-      var proyecionVec    = per.mult(proyecionScalar);
+      var proyecionScalar   = p5.Vector.dot(semiVano,per)/p5.Vector.dot(per,per);
+      var proyecionVec      = per.mult(proyecionScalar);
+          proyecionVec.norm = proyecionVec.mag()   
+      proyeccionesArray.push(proyecionVec);
       
-      proyecciones.push(  {x:proyecionVec.x, y:proyecionVec.y, norm:proyecionVec.mag()});
-
+      var FVi = (50* proyecionVec.norm*conductoresArray[i].d)/1000 ;
+          
+      FVTotal+=FVi
+      FVArray.push( FVi );
   };
-  
+   
+  FT = FVTotal + tenseTotalNorm;
 
-  return {tenses,tenseTotal,per1,per2,proyecciones}
+  dataObject = {vanosArray,tensesArray,proyeccionesArray,tenseTotalVec,per1,per2,conductoresArray,FVArray,FVTotal,FT}
+
+  return {vanosArray,tensesArray,proyeccionesArray,tenseTotalVec,per1,per2}
 
 };
 
@@ -486,29 +510,54 @@ function calcArrows(tense){
 
 }
 
-plotTable()
 
 function plotTable(){
 
-  var values = [
-                ['Salaries', 'Office', 'Merchandise', 'Legal', '<b>TOTAL</b>'],
-                [1200000, 20000, 80000, 2000, 12120000],
-                [1300000, 20000, 70000, 2000, 130902000],
-                [1300000, 20000, 120000, 2000, 131222000],
-                [1400000, 20000, 90000, 2000, 14102000]
-              ];
+  var tableData = [];
+  var numCols   = 4;
+  for(let i=0;i<numCols;i++){
+    tableData.push([]);
+  };
+
+  var tensesArray       = dataObject.tensesArray;
+  var proyeccionesArray = dataObject.proyeccionesArray;
+  var FVArray           = dataObject.FVArray;
+  for(let i=0;i<NumeroDeVanos;i++){
+     
+    var tx     = Math.round(tensesArray[i].x);
+    var ty     = Math.round(tensesArray[i].y);
+    var pnorm  = proyeccionesArray[i].norm.toFixed(3);
+    var fv     = FVArray[i].toFixed(3);
+    tableData[0].push(`Vano${i+1}`);
+    tableData[1].push(`[${tx}, ${ty}]`);
+    tableData[2].push(`${pnorm}`);
+    tableData[3].push(`${fv}`);
+  }
+
+  var tx = Math.round(dataObject.tenseTotalVec.x);
+  var ty = Math.round(dataObject.tenseTotalVec.y)
+  var tt = (dataObject.tenseTotalVec.norm).toFixed(3);
+  var FR = (dataObject.tenseTotalVec.norm).toFixed(3);
+  var FV = dataObject.FVTotal.toFixed(3);
+  var FT = dataObject.FT.toFixed(3);
+
+  tableData[0].push(`TOTAL`);
+  tableData[1].push(`[${tx}, ${ty}] = ${tt}`);
+  tableData[2].push(``);
+  tableData[3].push(`${ FV}`);
+
 
     var data = [{
                 type: 'table',
                 header: {
-                  values: [["<b>VANO Nº</b>"], ["<b>Q1</b>"],["<b>Q2</b>"], ["<b>Q3</b>"], ["<b>Q4</b>"]],
+                  values: [["<b>RESULTADOS </b>"], ["<b>FR: Tense [x,y] (kp)</b>"],["<b>Proyección Semivano (m) PS</b>"],["<b>FV: 50*PS*Diametro (kp)</b>"]],
                   align: "center",
                   line: {width: 1, color: 'black'},
                   fill: {color: "rgba(127,127,127,0.75"},
                   font: {size: 12, color: "white"}
                 },
                 cells: {
-                  values: values,
+                  values: tableData,
                   height: 30,
                   align: "center",
                   line: {width: 1},
@@ -517,10 +566,10 @@ function plotTable(){
                 }];
 
     var layout = {
-
+                  title:`Fuerza Total FT = FR + FV = ${FR}+${FV} = ${FT} kp`,
                   width:  divSizeW,
                   paper_bgcolor:'rgb(245,245,245)',
-                  margin:{top:5,pad:1}
+                  margin:{top:0,pad:1}
                  };
               
            

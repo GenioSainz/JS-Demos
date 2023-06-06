@@ -8,30 +8,69 @@
       html, body {
         margin: 0;
         padding: 0;
-      }
+        background:rgb(245,245,245)  !important;
+        font-family: "Open Sans", verdana, arial, sans-serif !important;
+      };
 
       canvas {
         display: block;
       }
 
-      /* .plotStyle{
-        border: 2px solid black;
-      } */
+      
+      .fontP{
+
+        color:#888;
+        background-color:rgb(245,245,245)
+
+      }
 
     </style>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 
 </head>
 <body>
 
-  <div id="plotID" class="plotStyle"></div>
-   
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js" ></script> -->
-    <script src="../LibrariesUtils/plotly.js"></script>
-    <script src="../LibrariesUtils/p5.min.js"></script>
-    <script src="../LibrariesUtils/myUtils.js"></script>
-    <script src="../LibrariesUtils/p5.gui/libraries/quicksettings.js"></script>
-    <script src="../LibrariesUtils/p5.gui/libraries/p5.gui.js"></script>
-    <script src="main.js"></script> 
+<div class="container text-center fontP">
+
+  <div class="row py-3">
+    <div class="col-12">
+      <h3>Cálculo Mecánico de Apoyos: Estrellamientos BT </h3> 
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+          <h6>Número de vanos ligados al apoyo central (X,Y)=(0,0) </h6>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option1">
+            <label class="form-check-label" for="inlineRadio1">3</label>
+          </div>
+          
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option2">
+            <label class="form-check-label" for="inlineRadio2">4</label>
+          </div>
+          
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="option3">
+            <label class="form-check-label" for="inlineRadio3">5</label>
+          </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="plotID"  class="plotStyle"></div>
+<div id="tableID" class="plotStyle"></div>
+
+<script src="../LibrariesUtils/plotly.js"></script>
+<script src="../LibrariesUtils/p5.min.js"></script>
+<script src="../LibrariesUtils/myUtils.js"></script>
+<script src="../LibrariesUtils/p5.gui/libraries/quicksettings.js"></script>
+<script src="../LibrariesUtils/p5.gui/libraries/p5.gui.js"></script>
+<script src="main2.js"></script> 
     
 </body>
 
