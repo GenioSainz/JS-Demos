@@ -23,7 +23,8 @@ class PerlinNoise {
         this.gradientBR = new p5.Vector(-1,+1); 
         this.gradientTL = new p5.Vector(+1,-1); 
         this.gradientTR = new p5.Vector(-1,-1); 
-
+        
+        // gradients index
         this.indexBL = 0;
         this.indexBR = 0;
         this.indexTL = 0;

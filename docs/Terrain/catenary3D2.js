@@ -71,9 +71,7 @@ function plotCatenarys(){
           },
       };
 
-
     Plotly.newPlot( plotID, tracesArray, layout)
-
 };
 
 function catenary3D(x1,y1,z1,x2,y2,z2){
@@ -81,8 +79,14 @@ function catenary3D(x1,y1,z1,x2,y2,z2){
     // Input Points  : x1, y1, z1, x2, y2, z2
     // Output Vectors: x_, y_, z_
     
-    var x  = tf.linspace(x1,x2,catenaryPoints);
-    var y  = tf.onesLike(x).mul(y1);
+    var dx = x2-x1;
+    var dy = y2-y1;
+
+    var x22   = x1 + Math.ssqrt( dx**2+dy**2);
+    var angle = Math.atan2d(dy,dx);
+
+    var x = tf.linspace(x1,x22,catenaryPoints);
+    var y = tf.onesLike(x).mul(y1);
        
     // matlab representation
     // var k  = 1/(2*c);
@@ -94,7 +98,7 @@ function catenary3D(x1,y1,z1,x2,y2,z2){
     
     // tensorFlow representation catenary
     var k  = 1/(2*c);
-    var a  = x2-x1;
+    var a  = x22-x1;
     var b  = z2-z1;
     var c1 = Math.asinh((k*b)/(Math.sinh(k*a)))-k*a;
     var c2 = -c*Math.cosh(c1);
@@ -115,6 +119,12 @@ function catenary3D(x1,y1,z1,x2,y2,z2){
 
     return trace 
 };
+
+
+
+
+
+
 
 
 function windowResized() {
