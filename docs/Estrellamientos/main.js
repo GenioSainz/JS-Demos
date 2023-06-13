@@ -262,15 +262,17 @@ function updatePlot(){
   var xUpdate = [];
   var yUpdate = [];
   
-  tracesArray.forEach(trace=>{
+  tracesArray.forEach( trace=>{
     
-    xUpdate.push( trace.x);
-    yUpdate.push( trace.y);
+      xUpdate.push( trace.x );
+      yUpdate.push( trace.y );
     
   });
   
   var updateAnnotations = { annotations: anottationsArray}
   var updateTraces      = {'x':xUpdate, 'y': yUpdate};
+  
+  console.log(updateTraces)
 
   Plotly.relayout( plotID, updateAnnotations);
   Plotly.restyle ( plotID, updateTraces);
@@ -511,7 +513,6 @@ function calcArrows(tense){
  return {arrowX,arrowY}
 
 }
-
 
 function plotTable(){
 

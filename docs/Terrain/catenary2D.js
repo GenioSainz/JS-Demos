@@ -5,11 +5,10 @@ let c              = 200;
 
 //let nodes = [ [100, 100, 50], [250, 100, 70], [400, 100, 100], [600, 100, 80]]
 
-let posX = tf.linspace(1,2000,catenarysN).arraySync();
-let posY = tf.onesLike(posX).mul(100).arraySync();
-let posZ = tf.linspace(100,300,catenarysN).arraySync();
-
-let nodes = [posX,posY,posZ]
+let posX  = tf.linspace(1,2000,catenarysN).arraySync();
+let posY  = tf.onesLike(posX).mul(100).arraySync();
+let posZ  = tf.linspace(100,300,catenarysN).arraySync();
+let nodes = [posX,posY,posZ];
 
 let tracesArray = [];
 var plotID      = 'plotID';
@@ -186,8 +185,9 @@ function catenary2D(x1,y1,z1,x2,y2,z2){
     var b  = z2-z1;
     var c1 = Math.asinh((k*b)/(Math.sinh(k*a)))-k*a;
     var c2 = -c*Math.cosh(c1);
-    var z  = tf.cosh( x.add(-x1).div(c).add(c1) ).mul(c).add(z1+c2);
-
+    // var z = z1 + cosh( (x-x1)/c +c1 )*c + c2;
+    var   z = tf.cosh( x.add(-x1).div(c).add(c1) ).mul(c).add(z1+c2);
+    
     var trace = {
                   x: x.arraySync(),
                   y: z.arraySync(),
