@@ -6,7 +6,7 @@ var cCatenary      = 400;
 var nTowers        = 8;
 
 var catenaryTracesIndex = [];
-var SEED                = Math.round(Math.random()*1000);
+var SEED                = 197; //Math.round(Math.random()*1000);
 var dataObject          = {};
 
 function setup() {
