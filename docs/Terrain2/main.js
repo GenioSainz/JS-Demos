@@ -13,7 +13,7 @@ function setup() {
     
     createCanvas(windowWidth,windowHeight);
     
-    noiseSeed(SEED);
+    //noiseSeed(SEED);
     
     var divPad = 50;
     divSizeH   = windowHeight - 2*divPad;
