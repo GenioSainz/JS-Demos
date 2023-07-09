@@ -6,7 +6,7 @@
 Some Demos...
 
 [Array-Of-Clocks](https://geniosainz.github.io/Array-Of-Clocks/)
-<img src="imgs\arrayClocks.PNG"  width="100%">
+<img src="imgs\arrayClocks.png"  width="100%">
 
 [Perlin-Noise](https://geniosainz.github.io/Perlin-Noise-Demo/)
 <img src="imgs\perlinNoise.png"  width="100%">
